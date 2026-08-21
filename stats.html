@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HCA Stats — Hockey Club Association</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="components/header.css">
+<link rel="stylesheet" href="stats.css">
+</head>
+<body>
+
+<div id="header"></div>
+
+<main>
+  <section id="stats" class="hca-stats-page">
+    <div class="hca-stats-container">
+      <div class="hca-stats-header">
+        <div>
+          <span class="hca-stats-eyebrow">SEASON 16</span>
+          <h1>Stats</h1>
+          <p>Track the players making an impact.</p>
+        </div>
+
+        <div class="hca-stats-controls">
+          <select id="hca-stats-view">
+            <option value="players">Players</option>
+            <option value="goalies">Goalies</option>
+          </select>
+          <select id="hca-stats-sort"></select>
+        </div>
+      </div>
+
+      <div class="hca-stats-leaders" id="hca-stats-leaders">
+        <div class="hca-stats-leader">Loading...</div>
+        <div class="hca-stats-leader">Loading...</div>
+        <div class="hca-stats-leader">Loading...</div>
+      </div>
+
+      <div class="hca-stats-status" id="hca-stats-status">
+        Loading player statistics...
+      </div>
+
+      <div class="hca-stats-table-wrap">
+        <table class="hca-stats-table">
+          <thead>
+            <tr id="hca-stats-head-row">
+              <th>#</th><th>PLAYER</th><th>TEAM</th><th>GP</th><th>G</th><th>A</th><th>PTS</th><th>+/-</th>
+            </tr>
+          </thead>
+          <tbody id="hca-stats-body">
+            <tr>
+              <td colspan="8">Loading...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span>HCA — Hockey Club Association</span>
+  <span>Season 16</span>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<script src="js/app.js"></script>
+<script src="js/stats.js"></script>
+
+</body>
+</html>

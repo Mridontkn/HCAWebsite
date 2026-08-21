@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HCA Standings — Hockey Club Association</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="components/header.css">
+<link rel="stylesheet" href="standings.css">
+</head>
+<body>
+
+<div id="header"></div>
+
+<main>
+  <section id="standings" class="hca-standings-page">
+    <div class="hca-standings-container">
+      <div class="hca-standings-header">
+        <div>
+          <span class="hca-standings-eyebrow">SEASON 16</span>
+          <h1>Standings</h1>
+          <p>Every team. Every point. One race to the top.</p>
+        </div>
+
+        <select id="hca-standings-filter">
+          <option value="all">All Teams</option>
+          <option value="Eastern">Eastern Conference</option>
+          <option value="Western">Western Conference</option>
+        </select>
+      </div>
+
+      <div id="hca-standings-status" class="hca-standings-status">
+        Loading standings...
+      </div>
+
+      <div class="hca-standings-table-wrap">
+        <table class="hca-standings-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>TEAM</th>
+              <th>GP</th>
+              <th>W</th>
+              <th>L</th>
+              <th>OTL</th>
+              <th>PTS</th>
+              <th>GF</th>
+              <th>GA</th>
+              <th>DIFF</th>
+            </tr>
+          </thead>
+          <tbody id="hca-standings-body">
+            <tr>
+              <td colspan="10">Loading...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span>HCA — Hockey Club Association</span>
+  <span>Season 16</span>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<script src="js/app.js"></script>
+<script src="js/standings.js"></script>
+
+</body>
+</html>

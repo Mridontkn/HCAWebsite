@@ -1,0 +1,58 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Barlow:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --black: #080808;
+  --ink: #151515;
+  --white: #fff;
+  --paper: #f3f3f1;
+  --gray-100: #e6e6e4;
+  --gray-300: #b8b8b5;
+  --gray-500: #6e6e6a;
+  --line: #d2d2cf;
+}
+
+.hca-players-page {
+  min-height: 100vh;
+  margin: 0 -52px;
+  padding: 64px 52px 100px;
+  color: var(--ink);
+  background: var(--paper);
+  font-family: Barlow, Arial, sans-serif;
+}
+
+.hca-players-container { width: min(1336px, 100%); margin: 0 auto; }
+.hca-players-eyebrow { color: var(--gray-500); font-size: 10px; font-weight: 800; letter-spacing: .19em; text-transform: uppercase; }
+.hca-players-header { display: flex; justify-content: space-between; align-items: end; gap: 30px; margin-bottom: 35px; }
+.hca-players-header h1 { margin: 9px 0 11px; color: var(--black); font: 900 clamp(62px, 8vw, 112px)/.78 'Barlow Condensed', Impact, sans-serif; text-transform: uppercase; }
+.hca-players-header p { color: var(--gray-500); font-size: 14px; }
+.hca-players-controls { display: flex; flex-wrap: wrap; gap: 10px; }
+.hca-players-controls input, .hca-players-controls select { min-height: 46px; padding: 11px 14px; color: var(--ink); background: var(--white); border: 1px solid #aaa; border-radius: 0; outline: 0; font: inherit; }
+.hca-players-controls input { width: 280px; }
+.hca-players-controls input:focus, .hca-players-controls select:focus { border-color: var(--black); box-shadow: inset 0 -3px var(--black); }
+.hca-player-result-count { margin-bottom: 14px; padding: 13px 0; color: var(--gray-500); border-top: 4px solid var(--black); border-bottom: 1px solid var(--line); font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.hca-player-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.hca-player-card { display: grid; grid-template-columns: 62px minmax(0, 1fr) auto; align-items: center; gap: 15px; min-height: 106px; padding: 17px; background: var(--white); border-top: 4px solid var(--black); }
+.hca-player-card:hover { border-top-color: #777; }
+.hca-player-avatar { width: 62px; height: 62px; display: grid; place-items: center; color: var(--white); background: var(--black); font: 800 21px 'Barlow Condensed', Impact, sans-serif; }
+.hca-player-position { color: var(--gray-500); font-size: 9px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+.hca-player-name { margin: 4px 0; color: var(--ink); font: 700 23px/1 'Barlow Condensed', Impact, sans-serif; text-transform: uppercase; }
+.hca-player-team { margin: 0; color: var(--gray-500); font-size: 12px; }
+.hca-player-rating { color: var(--black); text-align: right; }
+.hca-player-rating strong { display: block; font: 800 42px/.8 'Barlow Condensed', Impact, sans-serif; }
+.hca-player-rating small { color: var(--gray-500); font-size: 9px; font-weight: 800; letter-spacing: .1em; }
+.hca-player-message { grid-column: 1 / -1; padding: 55px; color: var(--gray-500); background: var(--white); border-top: 4px solid var(--black); text-align: center; }
+
+@media (max-width: 800px) {
+  .hca-players-page { margin: 0 -20px; padding: 54px 20px 80px; }
+  .hca-players-header { align-items: flex-start; flex-direction: column; }
+  .hca-players-controls { width: 100%; flex-direction: column; }
+  .hca-players-controls input, .hca-players-controls select { width: 100%; }
+  .hca-player-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 500px) {
+  .hca-player-card { grid-template-columns: 50px minmax(0, 1fr) auto; padding: 13px; }
+  .hca-player-avatar { width: 50px; height: 50px; }
+  .hca-player-name { font-size: 18px; }
+  .hca-player-rating strong { font-size: 32px; }
+}

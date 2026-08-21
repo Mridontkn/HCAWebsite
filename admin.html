@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HCA Admin</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin-page">
+
+  <div id="admin-login" class="admin-login">
+    <div class="admin-login-card">
+      <span class="admin-eyebrow">HOCKEY CLUB ASSOCIATION</span>
+      <h1>ADMIN ACCESS</h1>
+      <p>Sign in with an authorized HCA administrator account.</p>
+
+      <form id="admin-login-form">
+        <label>
+          EMAIL
+          <input id="admin-email" type="email" autocomplete="email" required>
+        </label>
+
+        <label>
+          PASSWORD
+          <input id="admin-password" type="password" autocomplete="current-password" required>
+        </label>
+
+        <button class="admin-primary" type="submit">SIGN IN</button>
+        <p id="admin-login-error" class="admin-error" aria-live="polite"></p>
+      </form>
+
+      <a class="admin-back" href="index.html">← BACK TO HCA</a>
+    </div>
+  </div>
+
+  <div id="admin-app" class="admin-shell" hidden>
+    <aside class="admin-sidebar">
+      <a href="index.html" class="admin-brand">HCA <span>ADMIN</span></a>
+
+      <nav class="admin-nav">
+        <button class="admin-nav-item active" data-section="dashboard">DASHBOARD</button>
+        <button class="admin-nav-item" data-section="players">PLAYERS</button>
+        <button class="admin-nav-item" data-section="teams">TEAMS</button>
+        <button class="admin-nav-item" data-section="games">GAMES</button>
+        <button class="admin-nav-item" data-section="transactions">TRANSACTIONS</button>
+        <button class="admin-nav-item" data-section="news">NEWS</button>
+        <button class="admin-nav-item" data-section="users">USERS</button>
+      </nav>
+
+      <div class="admin-sidebar-bottom">
+        <a href="index.html">VIEW PUBLIC SITE</a>
+        <button id="admin-logout">LOG OUT</button>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-topbar">
+        <div>
+          <span class="admin-eyebrow">CONTROL CENTER</span>
+          <h1 id="admin-section-title">DASHBOARD</h1>
+        </div>
+        <div class="admin-user" id="admin-user-email">ADMIN</div>
+      </header>
+
+      <section id="admin-section-dashboard" class="admin-section active">
+        <div class="admin-intro">
+          <div>
+            <span class="admin-eyebrow">SEASON 16</span>
+            <h2>LEAGUE OVERVIEW</h2>
+          </div>
+          <p>Manage the HCA database from one place.</p>
+        </div>
+
+        <div class="admin-stat-grid">
+          <article><span>TEAMS</span><strong id="admin-team-count">—</strong><small>Teams in database</small></article>
+          <article><span>PLAYERS</span><strong id="admin-player-count">—</strong><small>Players in database</small></article>
+          <article><span>GAMES</span><strong id="admin-game-count">—</strong><small>Recorded games</small></article>
+          <article><span>SCHEDULE</span><strong id="admin-schedule-count">—</strong><small>Scheduled games</small></article>
+        </div>
+
+        <div class="admin-panel-grid">
+          <article class="admin-panel">
+            <div class="admin-panel-heading"><span class="admin-eyebrow">QUICK ACTIONS</span><h3>MANAGE HCA</h3></div>
+            <div class="admin-actions-grid">
+              <button data-section="players">MANAGE PLAYERS</button>
+              <button data-section="teams">MANAGE TEAMS</button>
+              <button data-section="games">MANAGE GAMES</button>
+              <button data-section="transactions">TRANSACTIONS</button>
+            </div>
+          </article>
+
+          <article class="admin-panel">
+            <div class="admin-panel-heading"><span class="admin-eyebrow">SESSION</span><h3>ADMIN ACCOUNT</h3></div>
+            <p class="admin-session-copy">You are signed in as <strong id="admin-session-email">—</strong>.</p>
+            <button class="admin-danger" id="admin-logout-secondary">LOG OUT</button>
+          </article>
+        </div>
+      </section>
+
+      <section id="admin-section-players" class="admin-section">
+        <div class="admin-intro">
+          <div>
+            <span class="admin-eyebrow">PLAYER MANAGEMENT</span>
+            <h2>PLAYERS</h2>
+          </div>
+          <button id="admin-add-player" class="admin-primary admin-inline-button" type="button">+ ADD PLAYER</button>
+        </div>
+
+        <div class="admin-toolbar">
+          <input id="admin-player-search" type="search" placeholder="SEARCH PLAYERS OR TEAMS..." autocomplete="off">
+          <select id="admin-player-status">
+            <option value="all">ALL STATUS</option>
+            <option value="Active">ACTIVE</option>
+            <option value="Free Agent">FREE AGENT</option>
+            <option value="Inactive">INACTIVE</option>
+          </select>
+          <span id="admin-player-count-label" class="admin-toolbar-count">Loading players...</span>
+        </div>
+
+        <div id="admin-player-message" class="admin-message" aria-live="polite"></div>
+
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>PLAYER</th>
+                <th>TEAM</th>
+                <th>POS</th>
+                <th>OVR</th>
+                <th>POT</th>
+                <th>STATUS</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="admin-players-body"></tbody>
+          </table>
+        </div>
+
+        <div id="admin-player-modal" class="admin-modal" hidden>
+          <div class="admin-modal-backdrop" data-close-player-modal></div>
+          <div class="admin-modal-card" role="dialog" aria-modal="true" aria-labelledby="admin-player-modal-title">
+            <div class="admin-modal-header">
+              <div>
+                <span class="admin-eyebrow">PLAYER RECORD</span>
+                <h3 id="admin-player-modal-title">EDIT PLAYER</h3>
+              </div>
+              <button type="button" class="admin-modal-close" data-close-player-modal aria-label="Close">×</button>
+            </div>
+
+            <form id="admin-player-form" class="admin-form">
+              <input id="admin-player-id" type="hidden">
+
+              <div class="admin-form-grid">
+                <label>PLAYER NAME<input id="admin-player-name" required></label>
+                <label>TEAM<select id="admin-player-team"></select></label>
+                <label>POSITION<input id="admin-player-position" placeholder="C / LW / RW / D / G"></label>
+                <label>HANDEDNESS<input id="admin-player-handedness" placeholder="L / R"></label>
+                <label>OVERALL RATING<input id="admin-player-overall" type="number" min="0" max="99"></label>
+                <label>POTENTIAL RATING<input id="admin-player-potential" type="number" min="0" max="99"></label>
+                <label>YEARS LEFT TO GROW<input id="admin-player-years" type="number" min="0"></label>
+                <label>STATUS<select id="admin-player-status-edit"><option>Active</option><option>Free Agent</option><option>Inactive</option></select></label>
+              </div>
+
+              <div class="admin-form-section">
+                <span class="admin-eyebrow">SEASON 16 STATS</span>
+                <div class="admin-form-grid admin-form-grid-stats">
+                  <label>GAMES PLAYED<input id="admin-stat-gp" type="number" min="0"></label>
+                  <label>GOALS<input id="admin-stat-goals" type="number" min="0"></label>
+                  <label>ASSISTS<input id="admin-stat-assists" type="number" min="0"></label>
+                  <label>POINTS<input id="admin-stat-points" type="number" min="0"></label>
+                  <label>SAVES<input id="admin-stat-saves" type="number" min="0"></label>
+                  <label>SHUTOUTS<input id="admin-stat-shutouts" type="number" min="0"></label>
+                </div>
+              </div>
+
+              <p id="admin-player-form-error" class="admin-error"></p>
+              <div class="admin-form-actions">
+                <button type="button" class="admin-secondary" data-close-player-modal>CANCEL</button>
+                <button type="submit" class="admin-primary admin-save-button">SAVE PLAYER</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+      <section id="admin-section-teams" class="admin-section">
+        <div class="admin-placeholder"><span class="admin-eyebrow">TEAM MANAGEMENT</span><h2>TEAMS</h2><p>Team information, rosters and settings will live here.</p></div>
+      </section>
+      <section id="admin-section-games" class="admin-section">
+        <div class="admin-intro">
+          <div>
+            <span class="admin-eyebrow">GAME MANAGEMENT</span>
+            <h2>GAMES</h2>
+          </div>
+          <button id="admin-add-game" class="admin-primary admin-inline-button" type="button">+ ADD GAME</button>
+        </div>
+
+        <div class="admin-toolbar admin-games-toolbar">
+          <select id="admin-game-season">
+            <option value="all">ALL SEASONS</option>
+          </select>
+          <select id="admin-game-team-filter">
+            <option value="all">ALL TEAMS</option>
+          </select>
+          <span id="admin-game-count-label" class="admin-toolbar-count">Loading games...</span>
+        </div>
+
+        <div id="admin-game-message" class="admin-message" aria-live="polite"></div>
+
+        <div class="admin-table-wrap">
+          <table class="admin-table admin-games-table">
+            <thead>
+              <tr>
+                <th>SEASON</th>
+                <th>HOME</th>
+                <th>SCORE</th>
+                <th>AWAY</th>
+                <th>STATUS</th>
+                <th>OT</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="admin-games-body"></tbody>
+          </table>
+        </div>
+
+        <div id="admin-game-modal" class="admin-modal" hidden>
+          <div class="admin-modal-backdrop" data-close-game-modal></div>
+          <div class="admin-modal-card admin-game-modal-card" role="dialog" aria-modal="true" aria-labelledby="admin-game-modal-title">
+            <div class="admin-modal-header">
+              <div>
+                <span class="admin-eyebrow">GAME RECORD</span>
+                <h3 id="admin-game-modal-title">ADD GAME</h3>
+              </div>
+              <button type="button" class="admin-modal-close" data-close-game-modal aria-label="Close">×</button>
+            </div>
+
+            <form id="admin-game-form" class="admin-form">
+              <div class="admin-form-grid">
+                <label>SEASON<select id="admin-game-season-edit"></select></label>
+                <label>WEEK<input id="admin-game-week" type="number" min="1" placeholder="Optional"></label>
+                <label>HOME TEAM<select id="admin-game-home-team"></select></label>
+                <label>AWAY TEAM<select id="admin-game-away-team"></select></label>
+                <label>HOME GOALS<input id="admin-game-home-goals" type="number" min="0" value="0"></label>
+                <label>AWAY GOALS<input id="admin-game-away-goals" type="number" min="0" value="0"></label>
+                <label>HOME SAVES<input id="admin-game-home-saves" type="number" min="0" value="0"></label>
+                <label>AWAY SAVES<input id="admin-game-away-saves" type="number" min="0" value="0"></label>
+                <label>STATUS<select id="admin-game-status"><option value="Completed">Completed</option><option value="Scheduled">Scheduled</option></select></label>
+                <label class="admin-checkbox-label"><input id="admin-game-overtime" type="checkbox"> OVERTIME</label>
+              </div>
+
+              <div class="admin-form-section">
+                <div class="admin-game-entry-header">
+                  <div>
+                    <span class="admin-eyebrow">PLAYER STAT ENTRY</span>
+                    <h4>GOALS OR MANUAL STATS</h4>
+                  </div>
+                  <div class="admin-game-mode-toggle" role="tablist" aria-label="Player stat entry mode">
+                    <button type="button" class="active" data-game-mode="goals">GOAL EVENTS</button>
+                    <button type="button" data-game-mode="manual">MANUAL STATS</button>
+                  </div>
+                </div>
+
+                <div id="admin-game-goals-mode">
+                  <p class="admin-help-text">Add a goal, choose the scorer, then optionally add up to two assists. The score and player totals update automatically.</p>
+                  <div class="admin-game-goal-row">
+                    <select id="admin-game-goal-team"><option value="">SELECT SCORING TEAM</option></select>
+                    <select id="admin-game-scorer"><option value="">SELECT SCORER</option></select>
+                    <select id="admin-game-assist-one"><option value="">ASSIST 1 (OPTIONAL)</option></select>
+                    <select id="admin-game-assist-two"><option value="">ASSIST 2 (OPTIONAL)</option></select>
+                    <button type="button" class="admin-secondary" id="admin-add-goal">+ ADD GOAL</button>
+                  </div>
+                  <div id="admin-game-goal-list" class="admin-event-list"></div>
+                </div>
+
+                <div id="admin-game-manual-mode" hidden>
+                  <p class="admin-help-text">Enter the player stats for everyone who recorded a stat in this game. Players can be added one at a time.</p>
+                  <div id="admin-game-manual-list" class="admin-manual-list"></div>
+                  <button type="button" class="admin-secondary" id="admin-add-manual-player">+ ADD PLAYER STAT</button>
+                </div>
+              </div>
+
+              <div class="admin-form-section">
+                <span class="admin-eyebrow">GOALIES</span>
+                <p class="admin-help-text">Enter the goalie for each side, plus custom saves and GAA for this game. Empty-net goals are removed from the goalie's goals against.</p>
+                <div class="admin-form-grid">
+                  <label>HOME GOALIE<select id="admin-game-home-goalie"><option value="">NONE</option></select></label>
+                  <label>AWAY GOALIE<select id="admin-game-away-goalie"><option value="">NONE</option></select></label>
+                  <label>HOME GOALIE SAVES<input id="admin-game-home-goalie-saves" type="number" min="0" value="0"></label>
+                  <label>AWAY GOALIE SAVES<input id="admin-game-away-goalie-saves" type="number" min="0" value="0"></label>
+                  <label>HOME GOALIE GAA<input id="admin-game-home-goalie-gaa" type="number" min="0" step="0.01" placeholder="AUTO FROM GA"></label>
+                  <label>AWAY GOALIE GAA<input id="admin-game-away-goalie-gaa" type="number" min="0" step="0.01" placeholder="AUTO FROM GA"></label>
+                  <label>HOME EMPTY-NET GOALS<input id="admin-game-home-empty-net" type="number" min="0" value="0"></label>
+                  <label>AWAY EMPTY-NET GOALS<input id="admin-game-away-empty-net" type="number" min="0" value="0"></label>
+                </div>
+              </div>
+
+              <p id="admin-game-form-error" class="admin-error"></p>
+              <div class="admin-form-actions">
+                <button type="button" class="admin-secondary" data-close-game-modal>CANCEL</button>
+                <button type="submit" class="admin-primary admin-save-button">SAVE GAME</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+      <section id="admin-section-transactions" class="admin-section">
+        <div class="admin-placeholder"><span class="admin-eyebrow">TRANSACTION MANAGEMENT</span><h2>TRANSACTIONS</h2><p>Trades, free agents, waivers and approvals will live here.</p></div>
+      </section>
+      <section id="admin-section-news" class="admin-section">
+        <div class="admin-placeholder"><span class="admin-eyebrow">CONTENT MANAGEMENT</span><h2>NEWS</h2><p>News creation, editing and publishing will live here.</p></div>
+      </section>
+      <section id="admin-section-users" class="admin-section">
+        <div class="admin-placeholder"><span class="admin-eyebrow">ACCOUNT MANAGEMENT</span><h2>USERS</h2><p>User roles and team associations will live here.</p></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

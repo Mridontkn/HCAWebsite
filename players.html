@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HCA Players — Hockey Club Association</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="components/header.css">
+<link rel="stylesheet" href="players.css">
+</head>
+<body>
+
+<div id="header"></div>
+
+<main>
+  <section id="players" class="hca-players-page">
+    <div class="hca-players-container">
+      <div class="hca-players-header">
+        <div>
+          <span class="hca-players-eyebrow">LEAGUE DATABASE</span>
+          <h1>Players</h1>
+          <p>Browse every player in the HCA.</p>
+        </div>
+
+        <div class="hca-players-controls">
+          <input
+            id="hca-player-search"
+            type="search"
+            placeholder="Search players..."
+            autocomplete="off"
+          >
+
+          <select id="hca-player-position">
+            <option value="all">All Positions</option>
+            <option value="F">Forward</option>
+            <option value="D">Defense</option>
+            <option value="G">Goalie</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="hca-player-result-count">
+        <span id="hca-player-count">Loading...</span>
+      </div>
+
+      <div id="hca-player-grid" class="hca-player-grid">
+        <div class="hca-player-message">Loading players...</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span>HCA — Hockey Club Association</span>
+  <span>Season 16</span>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<script src="js/app.js"></script>
+<script src="js/players.js"></script>
+
+</body>
+</html>

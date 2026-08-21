@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Barlow:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --black: #080808;
+  --ink: #151515;
+  --white: #fff;
+  --paper: #f3f3f1;
+  --gray-100: #e6e6e4;
+  --gray-300: #b8b8b5;
+  --gray-500: #6e6e6a;
+  --line: #d2d2cf;
+}
+
+.hca-standings-page {
+  min-height: 100vh;
+  margin: 0 -52px;
+  padding: 64px 52px 100px;
+  color: var(--ink);
+  background: var(--paper);
+  font-family: Barlow, Arial, sans-serif;
+}
+
+.hca-standings-container { width: min(1336px, 100%); margin: 0 auto; }
+.hca-standings-eyebrow { color: var(--gray-500); font-size: 10px; font-weight: 800; letter-spacing: .19em; text-transform: uppercase; }
+.hca-standings-header { display: flex; justify-content: space-between; align-items: end; gap: 30px; margin-bottom: 35px; }
+.hca-standings-header h1 { margin: 9px 0 11px; color: var(--black); font: 900 clamp(62px, 8vw, 112px)/.78 'Barlow Condensed', Impact, sans-serif; text-transform: uppercase; }
+.hca-standings-header p { color: var(--gray-500); font-size: 14px; }
+.hca-standings-header select { min-width: 190px; min-height: 46px; padding: 11px 14px; color: var(--ink); background: var(--white); border: 1px solid #aaa; border-radius: 0; outline: 0; font: inherit; }
+.hca-standings-header select:focus { border-color: var(--black); box-shadow: inset 0 -3px var(--black); }
+.hca-standings-status { margin-bottom: 14px; padding: 13px 0; color: var(--gray-500); border-top: 4px solid var(--black); border-bottom: 1px solid var(--line); font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.hca-standings-table-wrap { overflow-x: auto; background: var(--white); border-top: 4px solid var(--black); }
+.hca-standings-table { width: 100%; min-width: 800px; border-collapse: collapse; }
+.hca-standings-table th { padding: 14px 16px; color: var(--gray-500); background: var(--gray-100); font-size: 10px; letter-spacing: .13em; text-align: right; }
+.hca-standings-table th:nth-child(1), .hca-standings-table th:nth-child(2) { text-align: left; }
+.hca-standings-table td { padding: 17px 16px; color: var(--gray-500); border-top: 1px solid var(--line); font-size: 13px; text-align: right; }
+.hca-standings-table tbody tr:hover td { background: #f7f7f5; }
+.hca-standings-table td:first-child { width: 35px; color: var(--gray-500); text-align: left; }
+.hca-standings-team { color: var(--ink) !important; font-weight: 700; text-align: left !important; }
+.hca-standings-points { color: var(--black) !important; font: 800 21px/.8 'Barlow Condensed', Impact, sans-serif; }
+.hca-standings-diff-positive { color: var(--black); font-weight: 700; }
+.hca-standings-diff-negative { color: var(--gray-500); font-weight: 700; }
+.hca-standings-empty { padding: 45px !important; color: var(--gray-500); text-align: center !important; }
+
+@media (max-width: 800px) {
+  .hca-standings-page { margin: 0 -20px; padding: 54px 20px 80px; }
+  .hca-standings-header { align-items: flex-start; flex-direction: column; }
+  .hca-standings-header select { width: 100%; }
+}

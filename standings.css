@@ -46,3 +46,24 @@
   .hca-standings-header { align-items: flex-start; flex-direction: column; }
   .hca-standings-header select { width: 100%; }
 }
+
+.hca-team-link {
+  color: inherit;
+  text-decoration: none;
+  display: inline-block;
+  position: relative;
+  transition: transform .15s ease, opacity .15s ease;
+}
+
+.hca-team-link::after {
+  content: "→";
+  display: inline-block;
+  margin-left: 8px;
+  color: #888;
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity .15s ease, transform .15s ease;
+}
+
+.hca-team-link:hover { opacity: .72; }
+.hca-team-link:hover::after { opacity: 1; transform: translateX(0); }

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HCA — Team</title>
+<link rel="stylesheet" href="style.css"><link rel="stylesheet" href="dark.css"><link rel="stylesheet" href="components/header.css"><link rel="stylesheet" href="team.css">
+</head>
+<body>
+<div id="header"></div>
+<main id="team-page" class="team-site" hidden>
+  <section class="team-schedule-strip" aria-label="Team schedule">
+    <button class="schedule-arrow schedule-prev" type="button" aria-label="Previous games">‹</button>
+    <div id="team-schedule-track" class="team-schedule-track">
+      <div class="schedule-loading">Loading schedule...</div>
+    </div>
+    <button class="schedule-arrow schedule-next" type="button" aria-label="Next games">›</button>
+    <button class="schedule-calendar" type="button" aria-label="Open full schedule">▣</button>
+  </section>
+
+  <nav class="team-tabs" aria-label="Team navigation">
+    <a data-view="home" href="#home">HOME</a><a data-view="standings" href="#standings">STANDINGS</a><a data-view="stats" href="#stats">STATS</a><a data-view="players" href="#players">PLAYERS</a><a data-view="games" href="#games">GAMES</a>
+  </nav>
+
+  <section id="team-view-home" class="team-view">
+    <div class="team-section-grid">
+      <section class="team-card"><div class="section-heading"><span class="eyebrow">THE RACE</span><h2>RECENT RESULTS</h2></div><div id="team-results" class="team-list"><div class="team-loading">Loading results...</div></div></section>
+      <section class="team-card"><div class="section-heading"><span class="eyebrow">SEASON 16</span><h2>TEAM LEADERS</h2></div><div id="team-leaders" class="team-list"><div class="team-loading">Loading leaders...</div></div></section>
+    </div>
+    <section class="team-card team-next-card"><div class="section-heading"><span class="eyebrow">THE ROSTER</span><h2>PLAYERS</h2></div><div id="team-roster-preview" class="team-roster-grid"><div class="team-loading">Loading roster...</div></div></section>
+  </section>
+
+  <section id="team-view-standings" class="team-view" hidden><section class="team-card"><div class="section-heading"><span class="eyebrow">SEASON 16</span><h2>TEAM STANDINGS</h2></div><div class="team-standings-meta" id="team-standings-meta"></div><div class="team-table-wrap"><table class="team-table"><thead><tr><th>#</th><th>TEAM</th><th>GP</th><th>W</th><th>L</th><th>OTL</th><th>PTS</th><th>GF</th><th>GA</th><th>DIFF</th></tr></thead><tbody id="team-standings-body"></tbody></table></div></section></section>
+
+  <section id="team-view-stats" class="team-view" hidden><div class="team-section-grid stats-grid"><section class="team-card"><div class="section-heading"><span class="eyebrow">OFFENSE</span><h2>SKATER STATS</h2></div><div class="team-table-wrap"><table class="team-table"><thead><tr><th>PLAYER</th><th>GP</th><th>G</th><th>A</th><th>PTS</th><th>+/-</th></tr></thead><tbody id="team-skater-stats"></tbody></table></div></section><section class="team-card"><div class="section-heading"><span class="eyebrow">BETWEEN THE PIPES</span><h2>GOALIE STATS</h2></div><div class="team-table-wrap"><table class="team-table"><thead><tr><th>GOALIE</th><th>GP</th><th>SV</th><th>SV%</th><th>GAA</th><th>SO</th></tr></thead><tbody id="team-goalie-stats"></tbody></table></div></section></div></section>
+
+  <section id="team-view-players" class="team-view" hidden><section class="team-card"><div class="section-heading"><span class="eyebrow">THE ROSTER</span><h2>PLAYERS</h2></div><div id="team-roster-full" class="team-roster-grid"><div class="team-loading">Loading roster...</div></div></section></section>
+
+  <section id="team-view-games" class="team-view" hidden>
+  <section class="team-card">
+    <div class="team-games-toolbar">
+      <div class="section-heading"><span class="eyebrow">TEAM SCHEDULE</span><h2>GAMES</h2></div>
+      <select id="team-games-season" aria-label="Select season"></select>
+    </div>
+    <div id="team-games" class="team-games-list"><div class="team-loading">Loading games...</div></div>
+  </section>
+</section>
+
+<div id="team-game-modal" class="team-game-modal" hidden>
+  <div class="team-game-modal-backdrop" data-close-game></div>
+  <article class="team-game-modal-card" role="dialog" aria-modal="true" aria-labelledby="team-game-modal-title">
+    <button class="team-game-modal-close" type="button" data-close-game aria-label="Close">×</button>
+    <div id="team-game-detail"></div>
+  </article>
+</div>
+</main>
+<section id="team-error" class="team-error" hidden><span class="eyebrow">HCA</span><h1>TEAM NOT FOUND</h1><p>We couldn't find the team you're looking for.</p><a href="/HCAWebsite/standings.html">← BACK TO STANDINGS</a></section>
+<footer><span>HCA — Hockey Club Association</span><span>Season 16</span></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="js/supabase.js"></script><script src="js/names.js"></script><script src="js/theme.js"></script>
+<script src="js/search.js"></script><script src="js/team.js"></script>
+</body></html>

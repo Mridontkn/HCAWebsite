@@ -1,78 +1,55 @@
 <header class="site-header">
-  <div class="header-container">
-
-    <a href="/HCAWebsite/index.html#home"
-       class="hca-brand"
-       aria-label="HCA Home">
-      <span class="hca-logo">HCA</span>
-    </a>
-
-    <nav class="main-nav" aria-label="Main navigation">
-      <a href="/HCAWebsite/index.html#home"
-         class="nav-item active"
-         data-page="home">
-        HOME
+  <div class="header-team-bar" hidden>
+    <div class="header-container">
+      <a href="index.html#home" class="hca-brand" aria-label="HCA Home"><span class="hca-logo">HCA</span></a>
+      <a class="team-header-identity" href="#home" aria-label="Team home">
+        <span class="team-header-logo-wrap"><img class="team-header-logo" alt="" hidden></span>
+        <span class="team-header-name">TEAM</span>
       </a>
-
-      <a href="/HCAWebsite/standings.html"
-         class="nav-item"
-         data-page="standings">
-        STANDINGS
-      </a>
-
-      <a href="/HCAWebsite/stats.html"
-         class="nav-item"
-         data-page="stats">
-        STATS
-      </a>
-
-      <a href="/HCAWebsite/players.html"
-         class="nav-item"
-         data-page="players">
-        PLAYERS
-      </a>
-    </nav>
-
-    <div class="header-actions">
-
-      <button
-        class="header-icon"
-        type="button"
-        aria-label="Search">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="11" cy="11" r="7"></circle>
-          <line
-            x1="16.5"
-            y1="16.5"
-            x2="22"
-            y2="22">
-          </line>
-        </svg>
-      </button>
-
-      <a
-        class="header-icon"
-        href="/HCAWebsite/admin.html"
-        aria-label="Admin panel"
-        title="Admin panel">
-
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="12" cy="8" r="4"></circle>
-          <path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"></path>
-        </svg>
-
-      </a>
-
-      <button
-        class="header-menu"
-        type="button"
-        aria-label="Open menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-
     </div>
+  </div>
+  <div class="header-nav-row">
+    <div class="header-container">
+      <a href="index.html#home" class="hca-brand" aria-label="HCA Home"><span class="hca-logo">HCA</span></a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="index.html#home" class="nav-item" data-page="home">HOME</a>
+        <a href="standings.html" class="nav-item" data-page="standings">STANDINGS</a>
+        <a href="stats.html" class="nav-item" data-page="stats">STATS</a>
+        <a href="players.html" class="nav-item" data-page="players">PLAYERS</a>
+        <a href="games.html" class="nav-item league-games-nav" data-page="games">GAMES</a>
+        <a href="playoffs.html" class="nav-item" data-page="playoffs">PLAYOFFS</a>
+        <a href="feed.html" class="nav-item" data-page="feed">FEED</a>
+        <a href="#games" class="nav-item team-games-nav" data-page="games" hidden>GAMES</a>
+      </nav>
+      <div class="header-actions">
+        <button class="header-icon search-trigger" type="button" aria-label="Search" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="22" y2="22"></line></svg></button>
+        <button class="header-icon theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode"><svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 15.5A8.5 8.5 0 0 1 8.5 4 8.5 8.5 0 1 0 20 15.5Z"></path></svg><svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg></button>
+        <button class="header-icon account-trigger" type="button" aria-label="Sign in" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"></path></svg></button>
+        <button class="header-menu" type="button" aria-label="Open menu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </div>
 
+  <div id="hca-search-panel" class="hca-search-panel" hidden>
+    <div class="hca-search-inner">
+      <div class="hca-search-heading">
+        <span class="eyebrow">HCA SEARCH</span>
+        <button class="hca-search-close" type="button" aria-label="Close search">×</button>
+      </div>
+      <div class="hca-search-box">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="22" y2="22"></line></svg>
+        <input id="hca-global-search" type="search" placeholder="Search teams, players, or games..." autocomplete="off">
+      </div>
+      <div id="hca-search-results" class="hca-search-results"><p>Start typing to search HCA.</p></div>
+    </div>
+  </div>
+
+  <div id="hca-account-panel" class="hca-account-panel" hidden>
+    <div class="hca-account-card">
+      <span class="eyebrow">HCA SIGN IN</span>
+      <h3>CHOOSE ACCESS</h3>
+      <a href="admin.html" class="hca-account-option"><strong>ADMIN PANEL</strong><small>League-wide database management</small><span>→</span></a>
+      <a href="gm.html" class="hca-account-option"><strong>TEAM GM PANEL</strong><small>Manage your team's roster and games</small><span>→</span></a>
+    </div>
   </div>
 </header>

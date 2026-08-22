@@ -16,7 +16,7 @@
   function calculatePlayerStats(players) {
     return players.filter(p => !isGoalie(p)).map(p => {
       const s = p.season_stats || {};
-      return { id:p.id, name:p.player_name || "Unknown Player", team:p.team_name || "Free Agent", gp:num(s.games_played ?? s.gp), goals:num(s.goals), assists:num(s.assists), points:num(s.points ?? (num(s.goals)+num(s.assists))), plusMinus:num(s.plus_minus ?? s.plusMinus) };
+      return { id:p.id, name:p.player_name || "Unknown Player", team:window.hcaDisplayTeamName(p.team_name || "Free Agent"), gp:num(s.games_played ?? s.gp), goals:num(s.goals), assists:num(s.assists), points:num(s.points ?? (num(s.goals)+num(s.assists))), plusMinus:num(s.plus_minus ?? s.plusMinus) };
     });
   }
 
@@ -24,7 +24,7 @@
     return players.filter(isGoalie).map(p => {
       const s = p.season_stats || {};
       const gp=num(s.games_played ?? s.gp), saves=num(s.saves), ga=num(s.goals_against), shots=num(s.shots_against ?? (saves+ga));
-      return { id:p.id, name:p.player_name || "Unknown Goalie", team:p.team_name || "Free Agent", gp, gaa:num(s.gaa), saves, shots, svPct:num(s.save_percentage ?? (shots ? saves/shots : 0)), shutouts:num(s.shutouts), assists:num(s.assists), points:num(s.points) };
+      return { id:p.id, name:p.player_name || "Unknown Goalie", team:window.hcaDisplayTeamName(p.team_name || "Free Agent"), gp, gaa:num(s.gaa), saves, shots, svPct:num(s.save_percentage ?? (shots ? saves/shots : 0)), shutouts:num(s.shutouts), assists:num(s.assists), points:num(s.points) };
     });
   }
 

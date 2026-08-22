@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HCA — Team GM</title>
+<link rel="stylesheet" href="style.css"><link rel="stylesheet" href="dark.css"><link rel="stylesheet" href="components/header.css"><link rel="stylesheet" href="gm.css">
+</head>
+<body class="gm-page">
+<div id="header"></div>
+<main>
+  <section id="gm-login" class="gm-login">
+    <div class="gm-card">
+      <span class="eyebrow">HOCKEY CLUB ASSOCIATION</span>
+      <h1>TEAM GM ACCESS</h1>
+      <p>Sign in with your authorized team general manager account.</p>
+      <form id="gm-login-form">
+        <label>EMAIL<input id="gm-email" type="email" autocomplete="email" required></label>
+        <label>PASSWORD<input id="gm-password" type="password" autocomplete="current-password" required></label>
+        <button type="submit">SIGN IN</button>
+        <p id="gm-login-error" class="gm-error" aria-live="polite"></p>
+      </form>
+      <a href="index.html">← BACK TO HCA</a>
+    </div>
+  </section>
+  <section id="gm-app" class="gm-app" hidden>
+    <div class="gm-heading"><span class="eyebrow">TEAM CONTROL CENTER</span><h1>GM PANEL</h1><p id="gm-user-email"></p></div>
+    <div class="gm-grid">
+      <article><span>ROSTER</span><strong>MANAGE</strong><p>Edit your team's player records.</p><a href="players.html">OPEN PLAYERS →</a></article>
+      <article><span>GAMES</span><strong>MANAGE</strong><p>Review your team's schedule and game reports.</p><a id="gm-games-link" href="team.html">OPEN TEAM SITE →</a></article>
+    </div>
+    <button id="gm-logout">LOG OUT</button>
+  </section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="js/supabase.js"></script><script src="js/names.js"></script><script src="js/theme.js"></script><script src="js/search.js"></script><script src="js/gm.js"></script>
+</body></html>

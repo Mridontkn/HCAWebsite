@@ -1,173 +1,33 @@
-.site-header,
-.site-header * {
-  box-sizing: border-box;
-}
+.site-header,.site-header *{box-sizing:border-box}.site-header{width:100%;min-height:78px;background:var(--header-bg,#080808);border-bottom:4px solid var(--header-accent,#fff);color:var(--header-ink,#f5f5f5);font-family:Barlow,Arial,sans-serif;position:sticky;top:0;z-index:1000}.header-team-bar{height:64px;background:var(--header-bg,#080808);border-bottom:1px solid color-mix(in srgb,var(--header-ink,#fff) 18%,transparent)}.header-nav-row{height:78px;background:#080808}.header-container{width:min(1500px,100%);height:100%;margin:0 auto;padding:0 52px;display:flex;align-items:center;gap:34px}.hca-brand{flex:0 0 auto;display:flex;align-items:center;color:var(--header-ink,#fff);text-decoration:none;margin-right:10px}.hca-logo{font-family:'Barlow Condensed',Impact,sans-serif;font-size:34px;line-height:1;font-weight:900;font-style:italic;letter-spacing:-.04em}.main-nav{height:100%;display:flex;align-items:stretch;justify-content:flex-start;gap:0}.nav-item{position:relative;display:flex;align-items:center;padding:0 18px;color:#a9a9a5;text-decoration:none;font-size:12px;font-weight:700;letter-spacing:.12em;white-space:nowrap}.nav-item::after{content:"";position:absolute;left:15px;right:15px;bottom:0;height:3px;background:var(--header-accent,#fff);transform:scaleX(0);transition:transform .16s ease}.nav-item:hover::after,.nav-item.active::after{transform:scaleX(1)}.nav-item:hover,.nav-item.active{color:var(--header-ink,#fff)}.nav-item[data-page="players"],.nav-item[data-page="standings"],.nav-item[data-page="stats"],.nav-item[data-page="games"]{font-weight:900}.header-actions{margin-left:auto;display:flex;align-items:center;gap:5px}.header-icon,.header-menu{width:38px;height:38px;display:grid;place-items:center;border:0;background:transparent;color:var(--header-ink,#f5f5f5);cursor:pointer}.header-icon svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.header-menu{display:none;gap:4px}.header-menu span{width:20px;height:2px;background:currentColor}.team-header-identity{display:flex;align-items:center;gap:14px;color:var(--header-ink,#fff);text-decoration:none;font:900 28px/.9 'Barlow Condensed',Impact,sans-serif;text-transform:uppercase}.team-header-logo-wrap{width:42px;height:42px;display:grid;place-items:center}.team-header-logo{width:100%;height:100%;object-fit:contain}.site-header.team-header .header-nav-row{background:var(--team-primary,#080808);border-top:1px solid color-mix(in srgb,var(--header-ink,#fff) 10%,transparent)}.site-header.team-header .header-nav-row .hca-brand{display:none}.site-header.team-header .header-nav-row .header-actions{display:flex}.site-header.team-header .header-nav-row .main-nav{margin-left:0}.site-header.team-header .header-nav-row .nav-item{color:color-mix(in srgb,var(--header-ink,#fff) 78%,transparent)}.site-header.team-header .header-nav-row .nav-item:hover,.site-header.team-header .header-nav-row .nav-item.active{color:var(--header-ink,#fff)}.site-header.team-header .header-nav-row .nav-item::after{background:var(--header-accent,#fff)}.site-header.team-header .header-team-bar{display:block}.site-header.team-header .header-nav-row{height:64px}.site-header.team-header{min-height:128px}.site-header.team-header .header-nav-row .header-container{padding-left:52px}.site-header.team-header .header-team-bar .hca-brand{margin-right:20px}
+@media(max-width:1050px){.header-container{padding:0 28px;gap:15px}.nav-item{padding:0 9px;font-size:11px}.nav-item::after{left:9px;right:9px}.team-header-identity{font-size:24px}.site-header.team-header .header-nav-row .header-container{padding-left:28px}}@media(max-width:760px){.site-header{min-height:68px}.header-nav-row{height:68px}.header-container{padding:0 20px}.main-nav{display:none}.header-menu{display:grid}.hca-logo{font-size:30px}.site-header.team-header{min-height:116px}.site-header.team-header .header-team-bar{height:58px}.site-header.team-header .header-nav-row{height:58px}.site-header.team-header .header-nav-row .header-container{padding-left:20px}.site-header.team-header .header-nav-row .hca-brand{display:flex}.site-header.team-header .header-nav-row .hca-brand+.main-nav{display:none}.team-header-identity{font-size:20px}.team-header-logo-wrap{width:34px;height:34px}}
 
-.site-header {
-  width: 100%;
-  height: 78px;
-  background: #080808;
-  border-bottom: 4px solid #fff;
-  color: #f5f5f5;
-  font-family: Barlow, Arial, sans-serif;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
+/* Header search + account menus */
+.hca-search-panel{position:fixed;inset:0;z-index:1100;background:rgba(8,8,8,.72);backdrop-filter:blur(5px);display:flex;align-items:flex-start;justify-content:center;padding:110px 24px 30px}.hca-search-inner{width:min(900px,100%);background:#f3f3f1;color:#111;padding:28px;border-top:5px solid var(--header-accent,#fff);box-shadow:0 24px 70px rgba(0,0,0,.35)}.hca-search-heading{display:flex;align-items:center;justify-content:space-between}.hca-search-heading .eyebrow{font-size:10px;font-weight:900;letter-spacing:.18em}.hca-search-close{border:0;background:transparent;font-size:34px;line-height:1;cursor:pointer}.hca-search-box{display:flex;align-items:center;gap:12px;margin-top:18px;border:1px solid #c8c8c4;background:#fff;padding:0 15px}.hca-search-box svg{width:21px;height:21px;fill:none;stroke:#111;stroke-width:1.8;stroke-linecap:round}.hca-search-box input{width:100%;height:62px;border:0;outline:0;background:transparent;font:600 17px Barlow,Arial,sans-serif}.hca-search-results{margin-top:18px;max-height:58vh;overflow:auto}.hca-search-results>p{color:#777;font-size:13px}.hca-search-result{display:grid;grid-template-columns:90px 1fr auto;gap:16px;align-items:center;padding:15px 10px;border-top:1px solid #d4d4d0;color:#111;text-decoration:none}.hca-search-result:hover{background:#eaeae7}.hca-search-type{font-size:9px;font-weight:900;letter-spacing:.15em;color:#777}.hca-search-result strong{font:900 22px/.9 'Barlow Condensed',Impact,sans-serif;text-transform:uppercase}.hca-search-result small{display:block;margin-top:5px;color:#777;font-size:10px}.hca-search-result>span:last-child{font-size:20px}.hca-account-panel{position:fixed;right:34px;top:78px;z-index:1090}.hca-account-card{width:330px;background:#f3f3f1;color:#111;border-top:5px solid var(--header-accent,#fff);padding:22px;box-shadow:0 18px 50px rgba(0,0,0,.28)}.hca-account-card h3{margin:6px 0 16px;font:900 34px/.85 'Barlow Condensed',Impact,sans-serif}.hca-account-option{position:relative;display:block;padding:16px 38px 16px 14px;border:1px solid #c8c8c4;background:#fff;color:#111;text-decoration:none;margin-top:10px}.hca-account-option:hover{background:#e9e9e6}.hca-account-option strong{display:block;font-size:12px;letter-spacing:.1em}.hca-account-option small{display:block;margin-top:5px;color:#777;font-size:10px}.hca-account-option span{position:absolute;right:13px;top:50%;transform:translateY(-50%);font-size:20px}.header-icon{position:relative}
+@media(max-width:760px){.hca-account-panel{right:16px;top:68px}.hca-account-card{width:min(330px,calc(100vw - 32px))}.hca-search-panel{padding:80px 12px 20px}.hca-search-inner{padding:20px}.hca-search-result{grid-template-columns:70px 1fr auto}}
 
-.header-container {
-  width: min(1500px, 100%);
-  height: 100%;
-  margin: 0 auto;
-  padding: 0 52px;
-  display: flex;
-  align-items: center;
-  gap: 34px;
-}
+/* Search/account reliability + visibility */
+.hca-search-panel[hidden], .hca-account-panel[hidden], .header-team-bar[hidden], .team-games-nav[hidden] { display:none !important; }
+.hca-search-panel { color:#111; }
+.hca-search-inner { min-height:210px; }
+.hca-search-results { color:#111; }
+.hca-search-results p { margin:14px 0; }
+.search-status,.search-hint { font-weight:700; letter-spacing:.04em; }
+.search-empty { font-weight:800; text-transform:uppercase; }
+.search-error { color:#b00020 !important; font-weight:800; }
+.league-games-nav{display:flex}.team-games-nav[hidden]{display:none!important}.theme-toggle svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:760px){.league-games-nav{display:none}.site-header.team-header .team-games-nav{display:flex}}
 
-.hca-brand {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  color: #fff;
-  text-decoration: none;
-  margin-right: 10px;
-}
-
-.hca-logo {
-  font-family: 'Barlow Condensed', Impact, sans-serif;
-  font-size: 34px;
-  line-height: 1;
-  font-weight: 900;
-  font-style: italic;
-  letter-spacing: -.04em;
-}
-
-.main-nav {
-  height: 100%;
-  display: flex;
-  align-items: stretch;
-  justify-content: flex-start;
-  gap: 0;
-}
-
-.nav-item {
-  position: relative;
-  display: flex;
-  align-items: center;
-  padding: 0 18px;
-  color: #a9a9a5;
-  text-decoration: none;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: .12em;
-  white-space: nowrap;
-}
-
-.nav-item::after {
-  content: "";
-  position: absolute;
-  left: 15px;
-  right: 15px;
-  bottom: 0;
-  height: 3px;
-  background: #fff;
-  transform: scaleX(0);
-  transition: transform .16s ease;
-}
-
-.nav-item:hover::after,
-.nav-item.active::after {
-  transform: scaleX(1);
-}
-
-.nav-item:hover,
-.nav-item.active { color: #fff; }
-
-.nav-item[data-page="players"] { font-weight: 900; }
-.nav-item[data-page="standings"] { font-weight: 900; }
-.nav-item[data-page="stats"] { font-weight: 900; }
-
-.header-actions {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.header-icon,
-.header-menu {
-  width: 38px;
-  height: 38px;
-  display: grid;
-  place-items: center;
-  border: 0;
-  background: transparent;
-  color: #f5f5f5;
-  cursor: pointer;
-}
-
-.header-icon:hover,
-.header-menu:hover {
-  color: #fff;
-}
-
-.header-icon svg {
-  width: 21px;
-  height: 21px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.header-menu {
-  display: none;
-  gap: 4px;
-}
-
-.header-menu span {
-  width: 20px;
-  height: 2px;
-  background: currentColor;
-}
-
-@media (max-width: 1050px) {
-  .header-container {
-    padding: 0 28px;
-    gap: 15px;
-  }
-
-  .nav-item {
-    padding: 0 9px;
-    font-size: 11px;
-  }
-
-  .nav-item::after {
-    left: 9px;
-    right: 9px;
-  }
-}
-
-@media (max-width: 760px) {
-  .site-header {
-    height: 68px;
-  }
-
-  .header-container {
-    padding: 0 20px;
-  }
-
-  .main-nav {
-    display: none;
-  }
-
-  .header-menu {
-    display: grid;
-  }
-
-  .hca-logo {
-    font-size: 30px;
-  }
+/* Header interaction reliability: keep actions above long navigation rows. */
+.site-header { isolation:isolate; }
+.site-header .header-nav-row,
+.site-header .header-team-bar { position:relative; z-index:1001; }
+.site-header .header-container { position:relative; z-index:1002; }
+.site-header .main-nav { position:relative; z-index:1002; flex:0 1 auto; min-width:0; }
+.site-header .header-actions { position:relative; z-index:1005; flex:0 0 auto; pointer-events:auto; }
+.site-header .header-icon { position:relative; z-index:1006; pointer-events:auto; }
+.site-header .hca-search-panel { z-index:1100; pointer-events:auto; }
+.site-header .hca-account-panel { z-index:1090; pointer-events:auto; }
+@media (min-width:761px) {
+  .site-header .main-nav { overflow:hidden; }
+  .site-header .nav-item { flex:0 0 auto; }
 }

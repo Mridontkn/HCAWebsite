@@ -133,7 +133,7 @@ function renderPlayers() {
 
     grid.innerHTML = filtered.map(player => {
         const name = player.player_name || "Unknown Player";
-        const team = player.team_name || "Free Agent";
+        const team = window.hcaDisplayTeamName(player.team_name || "Free Agent");
         const pos = positionValue(player) || "—";
         const rating = player.overall_rating ?? "—";
 
@@ -251,7 +251,7 @@ async function loadHeader() {
 
         headerContainer.innerHTML = await response.text();
 
-        const standalonePage = ["players.html", "standings.html", "stats.html"]
+        const standalonePage = ["players.html", "standings.html", "stats.html", "team.html"]
             .find(page => location.pathname.endsWith(`/${page}`));
 
         if (standalonePage) {
@@ -312,7 +312,7 @@ async function initApp() {
     await loadHeader();
     await loadLeagueStats();
 
-    if (["/players.html", "/standings.html", "/stats.html"].some(path => location.pathname.endsWith(path))) return;
+    if (["/players.html", "/standings.html", "/stats.html", "/team.html"].some(path => location.pathname.endsWith(path))) return;
 
     const initialPage = location.hash.slice(1);
     const validPages = ["home", "standings", "stats"];

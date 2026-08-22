@@ -114,7 +114,7 @@
           </h3>
 
           <p class="hca-player-team">
-            ${escapeHTML(player.team_name || "Free Agent")}
+            ${escapeHTML(window.hcaDisplayTeamName(player.team_name || "Free Agent"))}
           </p>
         </div>
 
@@ -148,6 +148,9 @@
       if (error) throw error;
 
       players = data || [];
+      const params = new URLSearchParams(location.search);
+      const initialSearch = params.get("search");
+      if (initialSearch && searchInput) searchInput.value = initialSearch;
       render();
 
       console.log(`HCA Players: loaded ${players.length} players.`);

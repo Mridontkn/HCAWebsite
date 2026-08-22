@@ -30,7 +30,7 @@
 
     return {
       id: team.id,
-      name: team.name || team.team_name || "Unknown Team",
+      name: window.hcaDisplayTeamName(team.name || team.team_name || "Unknown Team"),
 
       conference: team.conference || "",
       division: team.division || "",
@@ -342,7 +342,9 @@ const overtime =
           </td>
 
           <td class="hca-standings-team">
-            ${escapeHTML(team.name)}
+            <a class="hca-team-link" href="team.html?id=${encodeURIComponent(team.id)}" aria-label="View ${escapeHTML(team.name)} team page">
+              ${escapeHTML(team.name)}
+            </a>
           </td>
 
           <td>

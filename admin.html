@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HCA Admin</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="admin.css">
+  <link rel="stylesheet" href="admin.css"><link rel="stylesheet" href="dark.css">
 </head>
 <body class="admin-page">
 
@@ -43,6 +43,7 @@
         <button class="admin-nav-item" data-section="players">PLAYERS</button>
         <button class="admin-nav-item" data-section="teams">TEAMS</button>
         <button class="admin-nav-item" data-section="games">GAMES</button>
+        <button class="admin-nav-item" data-section="playoffs">PLAYOFFS</button>
         <button class="admin-nav-item" data-section="transactions">TRANSACTIONS</button>
         <button class="admin-nav-item" data-section="news">NEWS</button>
         <button class="admin-nav-item" data-section="users">USERS</button>
@@ -60,7 +61,7 @@
           <span class="admin-eyebrow">CONTROL CENTER</span>
           <h1 id="admin-section-title">DASHBOARD</h1>
         </div>
-        <div class="admin-user" id="admin-user-email">ADMIN</div>
+        <div class="admin-top-actions"><button class="theme-toggle admin-theme-toggle" type="button" aria-label="Toggle dark mode"><span class="moon">◐</span><span class="sun">☀</span></button><div class="admin-user" id="admin-user-email">ADMIN</div></div>
       </header>
 
       <section id="admin-section-dashboard" class="admin-section active">
@@ -86,7 +87,7 @@
               <button data-section="players">MANAGE PLAYERS</button>
               <button data-section="teams">MANAGE TEAMS</button>
               <button data-section="games">MANAGE GAMES</button>
-              <button data-section="transactions">TRANSACTIONS</button>
+              <button data-section="transactions">TRANSACTIONS</button><button data-section="news">POST TO FEED</button><button data-section="playoffs">EDIT PLAYOFFS</button>
             </div>
           </article>
 
@@ -183,8 +184,31 @@
           </div>
         </div>
       </section>
+      <section id="admin-section-playoffs" class="admin-section">
+        <div class="admin-intro">
+          <div><span class="admin-eyebrow">POSTSEASON MANAGEMENT</span><h2>PLAYOFF BRACKET</h2></div>
+          <div class="admin-bracket-actions"><button id="admin-add-playoff-year" class="admin-secondary" type="button">+ ADD PLAYOFF YEAR</button><button id="admin-bracket-auto-fill" class="admin-secondary" type="button">AUTO-FILL TOP 16</button><button id="admin-bracket-save" class="admin-primary admin-inline-button" type="button">SAVE BRACKET</button></div>
+        </div>
+        <div class="admin-toolbar">
+          <select id="admin-bracket-season"><option value="Season 16">SEASON 16</option></select><button id="admin-delete-playoff-year" class="admin-secondary" type="button">DELETE YEAR</button>
+          <select id="admin-bracket-round"><option value="all">ALL ROUNDS</option><option value="r1">ROUND 1</option><option value="r2">ROUND 2</option><option value="r3">CONFERENCE FINALS</option><option value="r4">FINAL</option></select>
+          <span id="admin-bracket-status" class="admin-toolbar-count">No saved bracket loaded.</span>
+        </div>
+        <div id="admin-bracket-message" class="admin-message" aria-live="polite"></div>
+        <div class="admin-bracket-help">Set the teams and scores for each matchup. Use <strong>ADVANCE WINNERS</strong> after a round is complete to move winners into the next round.</div>
+        <div id="admin-bracket" class="admin-bracket-board"></div>
+      </section>
+
       <section id="admin-section-teams" class="admin-section">
-        <div class="admin-placeholder"><span class="admin-eyebrow">TEAM MANAGEMENT</span><h2>TEAMS</h2><p>Team information, rosters and settings will live here.</p></div>
+        <div class="admin-intro"><div><span class="admin-eyebrow">TEAM MANAGEMENT</span><h2>TEAMS</h2></div><button id="admin-add-team" class="admin-primary admin-inline-button">+ ADD TEAM</button></div>
+        <div id="admin-team-message" class="admin-message"></div><div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>TEAM</th><th>CONFERENCE</th><th>DIVISION</th><th>W</th><th>L</th><th>OTL</th><th>PTS</th><th></th></tr></thead><tbody id="admin-teams-body"></tbody></table></div>
+        <div id="admin-team-modal" class="admin-modal" hidden><div class="admin-modal-backdrop" data-close-team-modal></div><div class="admin-modal-card"><div class="admin-modal-header"><div><span class="admin-eyebrow">TEAM RECORD</span><h3 id="admin-team-modal-title">ADD TEAM</h3></div><button type="button" class="admin-modal-close" data-close-team-modal>×</button></div><form id="admin-team-form" class="admin-form"><input id="admin-team-id" type="hidden"><div class="admin-form-grid"><label>TEAM NAME<input id="admin-team-name" required></label><label>CITY<input id="admin-team-city"></label><label>CONFERENCE<input id="admin-team-conference"></label><label>DIVISION<input id="admin-team-division"></label><label>LOGO URL<input id="admin-team-logo" placeholder="https://.../logo.png"></label>
+            <label>UPLOAD LOGO<input id="admin-team-logo-file" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml"></label>
+            <div class="admin-team-logo-preview-wrap">
+              <span class="admin-eyebrow">LOGO PREVIEW</span>
+              <div class="admin-team-logo-preview"><img id="admin-team-logo-preview" alt="Team logo preview" hidden><span id="admin-team-logo-preview-empty">NO LOGO</span></div>
+            </div>
+            <label>PRIMARY COLOR<input id="admin-team-primary" placeholder="#000000"></label><label>SECONDARY COLOR<input id="admin-team-secondary" placeholder="#FFFFFF"></label><label>WINS<input id="admin-team-wins" type="number" min="0"></label><label>LOSSES<input id="admin-team-losses" type="number" min="0"></label><label>OT LOSSES<input id="admin-team-otl" type="number" min="0"></label><label>POINTS<input id="admin-team-points" type="number" min="0"></label></div><p id="admin-team-form-error" class="admin-error"></p><div class="admin-form-actions"><button type="button" class="admin-secondary" data-close-team-modal>CANCEL</button><button class="admin-primary">SAVE TEAM</button></div></form></div></div>
       </section>
       <section id="admin-section-games" class="admin-section">
         <div class="admin-intro">
@@ -305,19 +329,23 @@
         </div>
       </section>
       <section id="admin-section-transactions" class="admin-section">
-        <div class="admin-placeholder"><span class="admin-eyebrow">TRANSACTION MANAGEMENT</span><h2>TRANSACTIONS</h2><p>Trades, free agents, waivers and approvals will live here.</p></div>
+        <div class="admin-intro"><div><span class="admin-eyebrow">TRANSACTION MANAGEMENT</span><h2>TRANSACTIONS</h2></div><button id="admin-add-transaction" class="admin-primary admin-inline-button">+ ADD TRANSACTION</button></div>
+        <div class="admin-toolbar"><select id="admin-transaction-type"><option value="all">ALL TYPES</option><option>TRADE</option><option>FREE AGENCY</option><option>WAIVER</option><option>RELEASE</option><option>SIGNING</option><option>OTHER</option></select><span id="admin-transaction-count" class="admin-toolbar-count">Loading transactions...</span></div><div id="admin-transaction-message" class="admin-message"></div><div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>DATE</th><th>TYPE</th><th>PLAYER</th><th>FROM</th><th>TO</th><th>DETAILS</th><th></th></tr></thead><tbody id="admin-transactions-body"></tbody></table></div>
+        <div id="admin-transaction-modal" class="admin-modal" hidden><div class="admin-modal-backdrop" data-close-transaction-modal></div><div class="admin-modal-card"><div class="admin-modal-header"><div><span class="admin-eyebrow">TRANSACTION RECORD</span><h3 id="admin-transaction-modal-title">ADD TRANSACTION</h3></div><button type="button" class="admin-modal-close" data-close-transaction-modal>×</button></div><form id="admin-transaction-form" class="admin-form"><input id="admin-transaction-id" type="hidden"><div class="admin-form-grid"><label>DATE<input id="admin-transaction-date" type="date"></label><label>SEASON<input id="admin-transaction-season" value="Season 16"></label><label>TYPE<select id="admin-transaction-type-edit"><option>TRADE</option><option>FREE AGENCY</option><option>WAIVER</option><option>RELEASE</option><option>SIGNING</option><option>OTHER</option></select></label><label>PLAYER<select id="admin-transaction-player"><option value="">NONE</option></select></label><label>FROM TEAM<select id="admin-transaction-from"><option value="">NONE</option></select></label><label>TO TEAM<select id="admin-transaction-to"><option value="">NONE</option></select></label><label>STATUS<select id="admin-transaction-status"><option>COMPLETED</option><option>PENDING</option><option>CANCELLED</option></select></label><label>DETAILS<textarea id="admin-transaction-details" rows="4"></textarea></label></div><p id="admin-transaction-form-error" class="admin-error"></p><div class="admin-form-actions"><button type="button" class="admin-secondary" data-close-transaction-modal>CANCEL</button><button class="admin-primary">SAVE TRANSACTION</button></div></form></div></div>
       </section>
       <section id="admin-section-news" class="admin-section">
-        <div class="admin-placeholder"><span class="admin-eyebrow">CONTENT MANAGEMENT</span><h2>NEWS</h2><p>News creation, editing and publishing will live here.</p></div>
+        <div class="admin-intro"><div><span class="admin-eyebrow">CONTENT MANAGEMENT</span><h2>NEWS / FEED</h2></div><button id="admin-add-news" class="admin-primary admin-inline-button">+ NEW POST</button></div><div id="admin-news-message" class="admin-message"></div><div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>TITLE</th><th>TYPE</th><th>TEAM</th><th>STATUS</th><th>DATE</th><th></th></tr></thead><tbody id="admin-news-body"></tbody></table></div>
+        <div id="admin-news-modal" class="admin-modal" hidden><div class="admin-modal-backdrop" data-close-news-modal></div><div class="admin-modal-card"><div class="admin-modal-header"><div><span class="admin-eyebrow">FEED POST</span><h3 id="admin-news-modal-title">NEW POST</h3></div><button type="button" class="admin-modal-close" data-close-news-modal>×</button></div><form id="admin-news-form" class="admin-form"><input id="admin-news-id" type="hidden"><div class="admin-form-grid"><label>TITLE<input id="admin-news-title" required></label><label>TYPE<select id="admin-news-type"><option>NEWS</option><option>ANNOUNCEMENT</option><option>TRADE</option><option>GAME</option><option>LEAGUE</option></select></label><label>TEAM<select id="admin-news-team"><option value="">LEAGUE-WIDE</option></select></label><label>PUBLISHED<select id="admin-news-published"><option value="true">PUBLISHED</option><option value="false">DRAFT</option></select></label><label>BODY<textarea id="admin-news-body-input" rows="10" required></textarea></label></div><p id="admin-news-form-error" class="admin-error"></p><div class="admin-form-actions"><button type="button" class="admin-secondary" data-close-news-modal>CANCEL</button><button class="admin-primary">SAVE POST</button></div></form></div></div>
       </section>
       <section id="admin-section-users" class="admin-section">
-        <div class="admin-placeholder"><span class="admin-eyebrow">ACCOUNT MANAGEMENT</span><h2>USERS</h2><p>User roles and team associations will live here.</p></div>
+        <div class="admin-intro"><div><span class="admin-eyebrow">ACCOUNT MANAGEMENT</span><h2>USERS</h2></div><button id="admin-add-user" class="admin-primary admin-inline-button">+ ADD USER</button></div><p class="admin-help-text">Add a GM by email and assign a team. If the account already exists it is linked immediately; if not, the assignment will attach when that email creates its HCA account.</p><div id="admin-user-message" class="admin-message"></div><div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>EMAIL</th><th>ROLE</th><th>TEAM</th><th>STATUS</th><th></th></tr></thead><tbody id="admin-users-body"></tbody></table></div><div id="admin-user-modal" class="admin-modal" hidden><div class="admin-modal-backdrop" data-close-user-modal></div><div class="admin-modal-card"><div class="admin-modal-header"><div><span class="admin-eyebrow">ACCOUNT ACCESS</span><h3>ADD USER</h3></div><button type="button" class="admin-modal-close" data-close-user-modal>×</button></div><form id="admin-user-form" class="admin-form"><div class="admin-form-grid"><label>EMAIL<input id="admin-user-email-input" type="email" required></label><label>ROLE<select id="admin-user-role"><option>GM</option><option>EDITOR</option><option>ADMIN</option></select></label><label>TEAM<select id="admin-user-team"><option value="">NO TEAM</option></select></label></div><p id="admin-user-form-error" class="admin-error"></p><div class="admin-form-actions"><button type="button" class="admin-secondary" data-close-user-modal>CANCEL</button><button class="admin-primary">SAVE USER</button></div></form></div></div>
       </section>
     </main>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase.js"></script>
+  <script src="js/supabase.js"></script><script src="js/names.js"></script><script src="js/theme.js"></script>
   <script src="js/admin.js"></script>
+<script src="js/bracket.js"></script><script src="js/admin-enhancements.js"></script>
 </body>
 </html>

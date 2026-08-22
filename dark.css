@@ -1,0 +1,237 @@
+/* HCA dark mode */
+html.hca-dark, body.hca-dark {
+  --black:#080808; --ink:#f2f2ef; --white:#f4f4f2; --paper:#101010;
+  --gray-100:#1d1d1d; --gray-300:#a9a9a5; --gray-500:#777773; --line:#343432;
+  color-scheme:dark;
+}
+body.hca-dark{background:#101010;color:#f2f2ef}
+body.hca-dark main, body.hca-dark .team-site{background:#101010;color:#f2f2ef}
+body.hca-dark .snapshot-grid article,body.hca-dark .home-leader-card,body.hca-dark .home-game-card,body.hca-dark .team-card,body.hca-dark .team-player,body.hca-dark .team-game,body.hca-dark .team-schedule-card,body.hca-dark .team-schedule-strip,body.hca-dark .team-tabs,body.hca-dark .team-table-wrap,body.hca-dark .team-section,body.hca-dark .team-next-card,body.hca-dark .sportcast-grid section,body.hca-dark .sportcast-events,body.hca-dark .game-page-card,body.hca-dark .feed-card,body.hca-dark .games-page-card,body.hca-dark .playoff-page-card{background:#171717;color:#f2f2ef;border-color:#343432}
+body.hca-dark .snapshot-grid,body.hca-dark .home-highlights-section,body.hca-dark .home-games-section,body.hca-dark .next-section{border-color:#f2f2ef}
+body.hca-dark .snapshot-grid strong,body.hca-dark .section-heading h2,body.hca-dark .home-section-title h2,body.hca-dark .home-games-section h2,body.hca-dark .home-game-meta span,body.hca-dark .home-leader-row,body.hca-dark .team-section h2,body.hca-dark .team-game-score,body.hca-dark .team-player,body.hca-dark .team-table td{color:#f2f2ef}
+body.hca-dark input,body.hca-dark select,body.hca-dark textarea{background:#171717!important;color:#f2f2ef!important;border-color:#454543!important}
+body.hca-dark .hca-search-inner,body.hca-dark .hca-account-card{background:#171717;color:#f2f2ef}
+body.hca-dark .hca-search-box,body.hca-dark .hca-account-option{background:#111;color:#f2f2ef;border-color:#444}
+body.hca-dark .hca-search-result{color:#f2f2ef;border-color:#343432}
+body.hca-dark .hca-search-result:hover{background:#222}
+body.hca-dark footer{background:#050505}
+body.hca-dark .admin-main,body.hca-dark .admin-section,body.hca-dark .admin-panel,body.hca-dark .admin-stat-grid article,body.hca-dark .admin-table-wrap,body.hca-dark .admin-modal-card,body.hca-dark .admin-placeholder{background:#111;color:#f2f2ef}
+body.hca-dark .admin-table th,body.hca-dark .admin-table td{border-color:#333}
+body.hca-dark .admin-sidebar{background:#050505}
+body.hca-dark .admin-toolbar input,body.hca-dark .admin-toolbar select,body.hca-dark .admin-form input,body.hca-dark .admin-form select,body.hca-dark .admin-form textarea{background:#171717;color:#f2f2ef;border-color:#444}
+body.hca-dark .gm-card,body.hca-dark .gm-grid article{background:#171717;color:#f2f2ef}
+body.hca-dark .game-page-card{border-color:#343432}
+.theme-toggle .sun{display:none}.theme-toggle .moon{display:block}
+body.hca-dark .theme-toggle .sun{display:block} body.hca-dark .theme-toggle .moon{display:none}
+
+/* ===== Dark mode v2: complete palette overrides ===== */
+html.hca-dark, body.hca-dark {
+  --black:#f2f2ef;
+  --ink:#f2f2ef;
+  --white:#171717;
+  --paper:#101010;
+  --gray-100:#1d1d1d;
+  --gray-300:#b8b8b5;
+  --gray-500:#9b9b96;
+  --line:#343432;
+  color-scheme:dark;
+}
+
+body.hca-dark,
+body.hca-dark main,
+body.hca-dark .hca-stats-page,
+body.hca-dark .games-page,
+body.hca-dark .playoffs-page,
+body.hca-dark .feed-page,
+body.hca-dark .gamecast-page,
+body.hca-dark .team-site { background:#101010 !important; color:#f2f2ef !important; }
+
+body.hca-dark h1, body.hca-dark h2, body.hca-dark h3,
+body.hca-dark .section-heading h2, body.hca-dark .home-section-title h2,
+body.hca-dark .home-games-section h2, body.hca-dark .games-page-head h1,
+body.hca-dark .playoffs-head h1, body.hca-dark .feed-head h1,
+body.hca-dark .hca-stats-header h1 { color:#f2f2ef !important; }
+
+/* Home */
+body.hca-dark .snapshot-grid,
+body.hca-dark .home-highlights-section,
+body.hca-dark .home-games-section,
+body.hca-dark .next-section { border-color:#f2f2ef !important; }
+body.hca-dark .snapshot-grid article,
+body.hca-dark .home-leader-card,
+body.hca-dark .home-game-card { background:#171717 !important; color:#f2f2ef !important; border-color:#343432 !important; }
+body.hca-dark .snapshot-grid strong,
+body.hca-dark .home-leader-feature strong,
+body.hca-dark .home-game-teams strong,
+body.hca-dark .home-game-meta span { color:#f2f2ef !important; }
+body.hca-dark .home-leader-row,
+body.hca-dark .home-all-link,
+body.hca-dark .home-section-header>a { color:#f2f2ef !important; }
+body.hca-dark .home-game-card:hover { background:#202020 !important; }
+
+body.hca-dark .hero { background:#080808; color:#fff; border-color:#4a4a4a; }
+body.hca-dark .hero-content .eyebrow,
+body.hca-dark .hero-season span,
+body.hca-dark .hero-season small,
+body.hca-dark .hero-scroll { color:#b8b8b5; }
+body.hca-dark .hero h1,
+body.hca-dark .hero-season strong,
+body.hca-dark .hero-scroll span { color:#fff; }
+body.hca-dark .hero h1 span { color:#a9a9a5; }
+body.hca-dark .hero p { color:#c6c6c3; }
+body.hca-dark .hero .primary { border-color:#fff; color:#080808; background:#fff; }
+body.hca-dark .hero .primary:hover { color:#fff; background:transparent; }
+body.hca-dark .hero .secondary { border-color:#777; color:#fff; background:transparent; }
+body.hca-dark .hero .secondary:hover { border-color:#fff; background:#252525; }
+
+/* Stats */
+body.hca-dark .hca-stats-header select,
+body.hca-dark .hca-stats-leader,
+body.hca-dark .hca-stats-table-wrap { background:#171717 !important; color:#f2f2ef !important; border-color:#343432 !important; }
+body.hca-dark .hca-stats-header select { color:#f2f2ef !important; border-color:#454543 !important; }
+body.hca-dark .hca-stats-leader strong,
+body.hca-dark .hca-stats-points,
+body.hca-dark .hca-stats-positive { color:#f2f2ef !important; }
+body.hca-dark .hca-stats-table th { background:#202020 !important; color:#9b9b96 !important; }
+body.hca-dark .hca-stats-table td { color:#9b9b96 !important; border-color:#343432 !important; }
+body.hca-dark .hca-stats-table tbody tr:hover td { background:#222 !important; }
+body.hca-dark .hca-stats-player { color:#f2f2ef !important; }
+
+/* Games / Playoffs / Feed */
+body.hca-dark .games-page-head,
+body.hca-dark .playoffs-head,
+body.hca-dark .feed-head { border-color:#f2f2ef !important; }
+body.hca-dark .games-filters select,
+body.hca-dark .playoffs-head select { background:#171717 !important; color:#f2f2ef !important; border-color:#454543 !important; }
+body.hca-dark .league-game-row,
+body.hca-dark .public-match,
+body.hca-dark .feed-card { background:#171717 !important; color:#f2f2ef !important; border-color:#343432 !important; }
+body.hca-dark .league-game-row:hover { background:#222 !important; }
+body.hca-dark .league-game-team,
+body.hca-dark .league-game-score,
+body.hca-dark .league-game-meta b,
+body.hca-dark .public-team,
+body.hca-dark .feed-card h2 { color:#f2f2ef !important; }
+body.hca-dark .feed-tag { background:#f2f2ef !important; color:#101010 !important; }
+
+/* Neutral Gamecast */
+body.hca-dark .gamecast-top,
+body.hca-dark .gamecast-score,
+body.hca-dark .gamecast-card { background:#171717 !important; color:#f2f2ef !important; border-color:#343432 !important; }
+body.hca-dark .gamecast-top,
+body.hca-dark .gamecast-score,
+body.hca-dark .gamecast-card { border-color:#343432 !important; }
+body.hca-dark .gamecast-side h1,
+body.hca-dark .gamecast-side strong,
+body.hca-dark .gamecast-middle b,
+body.hca-dark .gc-title { color:#f2f2ef !important; }
+body.hca-dark .gc-info,
+body.hca-dark .gc-table,
+body.hca-dark .gc-row,
+body.hca-dark .gc-goalie { border-color:#343432 !important; }
+
+/* Team pages */
+body.hca-dark .team-schedule-strip,
+body.hca-dark .team-schedule-card,
+body.hca-dark .schedule-arrow,
+body.hca-dark .schedule-calendar,
+body.hca-dark .team-tabs,
+body.hca-dark .team-card,
+body.hca-dark .team-player,
+body.hca-dark .team-game,
+body.hca-dark .team-table-wrap,
+body.hca-dark .team-next-card { background:#171717 !important; color:#f2f2ef !important; border-color:#343432 !important; }
+body.hca-dark .team-schedule-date { background:#202020 !important; }
+body.hca-dark .team-schedule-time { background:#f2f2ef !important; color:#101010 !important; }
+body.hca-dark .team-tabs a { color:#9b9b96 !important; }
+body.hca-dark .team-tabs a.active,
+body.hca-dark .team-tabs a:hover { color:#f2f2ef !important; background:#222 !important; }
+body.hca-dark .team-table th { border-color:#f2f2ef !important; }
+body.hca-dark .team-table td { color:#f2f2ef !important; border-color:#343432 !important; }
+body.hca-dark .team-player:hover,
+body.hca-dark .team-game:hover { background:#222 !important; }
+
+/* Never allow a light page background to leak through */
+body.hca-dark .games-empty,
+body.hca-dark .public-empty,
+body.hca-dark .feed-empty,
+body.hca-dark .home-loading,
+body.hca-dark .home-empty { color:#9b9b96 !important; }
+
+body.hca-dark.admin-page { background:#101010; color:#f2f2ef; }
+body.hca-dark .admin-login-card,
+body.hca-dark .admin-panel,
+body.hca-dark .admin-placeholder,
+body.hca-dark .admin-stat-grid article,
+body.hca-dark .admin-table-wrap,
+body.hca-dark .admin-modal-card,
+body.hca-dark .admin-bracket-help,
+body.hca-dark .admin-bracket-match,
+body.hca-dark .admin-bracket-empty { background:#171717; color:#f2f2ef; border-color:#343432; }
+body.hca-dark .admin-main { background:#101010; color:#f2f2ef; }
+body.hca-dark .admin-topbar,
+body.hca-dark .admin-table th,
+body.hca-dark .admin-modal-header,
+body.hca-dark .admin-form-section,
+body.hca-dark .admin-form-actions { border-color:#f2f2ef; }
+body.hca-dark .admin-user { border-color:#454543; color:#b8b8b5; }
+body.hca-dark .admin-intro p,
+body.hca-dark .admin-placeholder p,
+body.hca-dark .admin-session-copy,
+body.hca-dark .admin-help-text { color:#b8b8b5; }
+body.hca-dark .admin-stat-grid,
+body.hca-dark .admin-panel,
+body.hca-dark .admin-table-wrap { border-color:#343432; }
+body.hca-dark .admin-stat-grid article,
+body.hca-dark .admin-table td { border-color:#343432; }
+body.hca-dark .admin-stat-grid strong,
+body.hca-dark .admin-table td,
+body.hca-dark .admin-table td strong,
+body.hca-dark .admin-modal-header h3,
+body.hca-dark .admin-panel h3,
+body.hca-dark .admin-topbar h1,
+body.hca-dark .admin-intro h2 { color:#f2f2ef; }
+body.hca-dark .admin-actions-grid button,
+body.hca-dark .admin-secondary,
+body.hca-dark .admin-table-action,
+body.hca-dark .admin-modal-close,
+body.hca-dark .admin-game-mode-toggle,
+body.hca-dark .admin-game-mode-toggle button,
+body.hca-dark .admin-event-row,
+body.hca-dark .admin-event-empty { background:#202020; color:#f2f2ef; border-color:#454543; }
+body.hca-dark .admin-actions-grid button:hover,
+body.hca-dark .admin-secondary:hover,
+body.hca-dark .admin-table-action:hover,
+body.hca-dark .admin-modal-close:hover { background:#f2f2ef; color:#101010; border-color:#f2f2ef; }
+body.hca-dark .admin-game-mode-toggle button.active,
+body.hca-dark .admin-bracket-advance { background:#f2f2ef; color:#101010; }
+body.hca-dark .admin-table tr:hover td { background:#202020; }
+body.hca-dark .admin-table th { color:#9b9b96; }
+body.hca-dark .admin-table-empty,
+body.hca-dark .admin-toolbar-count,
+body.hca-dark .admin-form label,
+body.hca-dark .admin-checkbox-label { color:#9b9b96; }
+body.hca-dark .admin-bracket-round-head { border-color:#f2f2ef; }
+body.hca-dark .admin-bracket-round-head small,
+body.hca-dark .admin-bracket-match-actions small { color:#9b9b96; }
+body.hca-dark .admin-bracket-team { border-color:#343432; }
+body.hca-dark .admin-bracket-team select,
+body.hca-dark .admin-bracket-team input,
+body.hca-dark .admin-event-row,
+body.hca-dark .admin-event-empty { border-color:#454543; }
+body.hca-dark .admin-bracket-team select,
+body.hca-dark .admin-bracket-team input { background:#202020; color:#f2f2ef; }
+body.hca-dark .admin-bracket-team.is-winner { background:#292929; }
+body.hca-dark .admin-form input,
+body.hca-dark .admin-form select,
+body.hca-dark .admin-form textarea,
+body.hca-dark .admin-game-goal-row select,
+body.hca-dark .admin-manual-row select,
+body.hca-dark .admin-manual-row input { background:#202020 !important; color:#f2f2ef !important; border-color:#454543 !important; }
+body.hca-dark .admin-login-card > p,
+body.hca-dark .admin-login label,
+body.hca-dark .admin-back { color:#b8b8b5; }
+body.hca-dark .admin-login input { background:#202020; color:#f2f2ef; border-color:#454543; }
+body.hca-dark .admin-login input:focus,
+body.hca-dark .admin-form input:focus,
+body.hca-dark .admin-form select:focus { border-color:#f2f2ef; }

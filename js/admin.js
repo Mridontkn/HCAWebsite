@@ -52,6 +52,7 @@
       players: "PLAYERS",
       teams: "TEAMS",
       games: "GAMES",
+      playoffs: "PLAYOFFS",
       transactions: "TRANSACTIONS",
       news: "NEWS",
       users: "USERS"
@@ -151,7 +152,7 @@
 
     select.innerHTML = `<option value="">FREE AGENT / NO TEAM</option>` +
       teams.map(team => `
-        <option value="${escapeHTML(team.id)}">${escapeHTML(team.name || team.id)}</option>
+        <option value="${escapeHTML(team.id)}">${escapeHTML(window.hcaDisplayTeamName(team.name || team.id))}</option>
       `).join("");
 
     select.value = selectedId || "";
@@ -185,7 +186,7 @@
     body.innerHTML = filtered.map(player => `
       <tr>
         <td><strong>${escapeHTML(player.player_name || "Unknown Player")}</strong></td>
-        <td>${escapeHTML(player.team_name || "Free Agent")}</td>
+        <td>${escapeHTML(window.hcaDisplayTeamName(player.team_name || "Free Agent"))}</td>
         <td>${escapeHTML(positionText(player.position))}</td>
         <td><strong>${player.overall_rating ?? "—"}</strong></td>
         <td>${player.potential_rating ?? "—"}</td>
@@ -451,7 +452,7 @@
     if (!select) return;
 
     select.innerHTML = `<option value="all">ALL TEAMS</option>` +
-      teams.map(team => `<option value="${escapeHTML(team.id)}">${escapeHTML(team.name)}</option>`).join("");
+      teams.map(team => `<option value="${escapeHTML(team.id)}">${escapeHTML(window.hcaDisplayTeamName(team.name))}</option>`).join("");
   }
 
   function renderGames() {
@@ -509,9 +510,9 @@
         return `
           <tr>
             <td><strong>${escapeHTML(game.season || "—")}</strong></td>
-            <td>${escapeHTML(teamNameById(game.home_team_id))}</td>
+            <td>${escapeHTML(window.hcaDisplayTeamName(teamNameById(game.home_team_id)))}</td>
             <td><strong>${escapeHTML(gameScore(game))}</strong></td>
-            <td>${escapeHTML(teamNameById(game.away_team_id))}</td>
+            <td>${escapeHTML(window.hcaDisplayTeamName(teamNameById(game.away_team_id)))}</td>
             <td><span class="admin-status admin-status-${escapeHTML(statusClass)}">${escapeHTML(status)}</span></td>
             <td>${isGameOvertime(game) ? "YES" : "—"}</td>
             <td><button type="button" class="admin-table-action admin-delete-game" data-delete-game="${escapeHTML(game.id)}">DELETE</button></td>
@@ -596,11 +597,11 @@
     const goalTeam = document.getElementById("admin-game-goal-team");
     if (!home || !away || !goalTeam) return;
 
-    const options = teams.map(team => `<option value="${escapeHTML(team.id)}">${escapeHTML(team.name)}</option>`).join("");
+    const options = teams.map(team => `<option value="${escapeHTML(team.id)}">${escapeHTML(window.hcaDisplayTeamName(team.name))}</option>`).join("");
     home.innerHTML = `<option value="">SELECT HOME TEAM</option>${options}`;
     away.innerHTML = `<option value="">SELECT AWAY TEAM</option>${options}`;
     goalTeam.innerHTML = `<option value="">SELECT SCORING TEAM</option>` +
-      teams.map(team => `<option value="${escapeHTML(team.id)}">${escapeHTML(team.name)}</option>`).join("");
+      teams.map(team => `<option value="${escapeHTML(team.id)}">${escapeHTML(window.hcaDisplayTeamName(team.name))}</option>`).join("");
   }
 
   function populateGoalieSelects() {
@@ -984,8 +985,8 @@
         game_date: null,
         home_team_id: homeTeamId,
         away_team_id: awayTeamId,
-        home_team_name: homeTeam?.name || "",
-        away_team_name: awayTeam?.name || "",
+        home_team_name: window.hcaDisplayTeamName(homeTeam?.name || ""),
+        away_team_name: window.hcaDisplayTeamName(awayTeam?.name || ""),
         home_score: homeGoals,
         away_score: awayGoals,
         status: status === "Scheduled" ? "Scheduled" : "Completed",
@@ -1027,7 +1028,7 @@
   async function deleteGame(gameId) {
     const game = games.find(item => String(item.id) === String(gameId));
     if (!game) return;
-    const matchup = `${game.home_team_name || teamNameById(game.home_team_id)} ${gameScore(game)} ${game.away_team_name || teamNameById(game.away_team_id)}`;
+    const matchup = `${window.hcaDisplayTeamName(game.home_team_name || teamNameById(game.home_team_id))} ${gameScore(game)} ${window.hcaDisplayTeamName(game.away_team_name || teamNameById(game.away_team_id))}`;
     if (!window.confirm(`Delete this game?\n\n${matchup}\n\nThis will also reverse the player and goalie stats recorded for the game.`)) return;
 
     let statsReversed = false;

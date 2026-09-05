@@ -45,6 +45,7 @@
         <button class="admin-nav-item" data-section="games">GAMES</button>
         <button class="admin-nav-item" data-section="playoffs">PLAYOFFS</button>
         <button class="admin-nav-item" data-section="transactions">TRANSACTIONS</button>
+        <button class="admin-nav-item" data-section="contracts">CONTRACTS & CAP</button>
         <button class="admin-nav-item" data-section="news">NEWS</button>
         <button class="admin-nav-item" data-section="users">USERS</button>
       </nav>
@@ -87,7 +88,7 @@
               <button data-section="players">MANAGE PLAYERS</button>
               <button data-section="teams">MANAGE TEAMS</button>
               <button data-section="games">MANAGE GAMES</button>
-              <button data-section="transactions">TRANSACTIONS</button><button data-section="news">POST TO FEED</button><button data-section="playoffs">EDIT PLAYOFFS</button>
+              <button data-section="transactions">TRANSACTIONS</button><button data-section="contracts">CONTRACTS & CAP</button><button data-section="news">POST TO FEED</button><button data-section="playoffs">EDIT PLAYOFFS</button>
             </div>
           </article>
 
@@ -117,6 +118,31 @@
             <option value="Inactive">INACTIVE</option>
           </select>
           <span id="admin-player-count-label" class="admin-toolbar-count">Loading players...</span>
+        </div>
+
+        <div class="admin-panel admin-nhl-import-panel">
+          <div class="admin-panel-heading">
+            <div>
+              <span class="admin-eyebrow">NHL DATA IMPORT</span>
+              <h3>IMPORT PLAYER HEADSHOTS</h3>
+            </div>
+            <span class="admin-help-text">Fetches rosters server-side, matches existing HCA players by name, and saves the NHL player ID + headshot URL. No duplicate HCA players are created.</span>
+          </div>
+          <div class="admin-toolbar admin-nhl-import-toolbar">
+            <label class="admin-toolbar-field">NHL TEAM
+              <select id="admin-nhl-team">
+                <option value="ALL">ALL NHL TEAMS</option>
+              </select>
+            </label>
+            <label class="admin-toolbar-field">MATCH MODE
+              <select id="admin-nhl-match-mode">
+                <option value="existing">MATCH EXISTING HCA PLAYERS</option>
+              </select>
+            </label>
+            <button id="admin-import-nhl-headshots" class="admin-primary admin-inline-button" type="button">IMPORT HEADSHOTS</button>
+          </div>
+          <div id="admin-nhl-import-message" class="admin-message" aria-live="polite"></div>
+          <div id="admin-nhl-import-results" class="admin-nhl-import-results" hidden></div>
         </div>
 
         <div id="admin-player-message" class="admin-message" aria-live="polite"></div>
@@ -164,6 +190,29 @@
               </div>
 
               <div class="admin-form-section">
+                <div class="admin-panel-heading">
+                  <div>
+                    <span class="admin-eyebrow">PLAYER IMAGE</span>
+                    <h4>HEADSHOT</h4>
+                  </div>
+                  <span class="admin-help-text">Upload a replacement headshot when the NHL importer does not have one.</span>
+                </div>
+
+                <div class="admin-player-headshot-editor">
+                  <div class="admin-player-headshot-preview">
+                    <img id="admin-player-headshot-preview" alt="Player headshot preview" hidden>
+                    <span id="admin-player-headshot-preview-empty">NO HEADSHOT</span>
+                  </div>
+                  <div class="admin-player-headshot-upload">
+                    <label>UPLOAD HEADSHOT
+                      <input id="admin-player-headshot-file" type="file" accept="image/png,image/jpeg,image/webp">
+                    </label>
+                    <small id="admin-player-headshot-status" class="admin-help-text"></small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="admin-form-section">
                 <span class="admin-eyebrow">SEASON 16 STATS</span>
                 <div class="admin-form-grid admin-form-grid-stats">
                   <label>GAMES PLAYED<input id="admin-stat-gp" type="number" min="0"></label>
@@ -187,7 +236,7 @@
       <section id="admin-section-playoffs" class="admin-section">
         <div class="admin-intro">
           <div><span class="admin-eyebrow">POSTSEASON MANAGEMENT</span><h2>PLAYOFF BRACKET</h2></div>
-          <div class="admin-bracket-actions"><button id="admin-add-playoff-year" class="admin-secondary" type="button">+ ADD PLAYOFF YEAR</button><button id="admin-bracket-auto-fill" class="admin-secondary" type="button">AUTO-FILL TOP 16</button><button id="admin-bracket-save" class="admin-primary admin-inline-button" type="button">SAVE BRACKET</button></div>
+          <div class="admin-bracket-actions"><button id="admin-add-playoff-year" class="admin-secondary" type="button">+ ADD PLAYOFF YEAR</button><button id="admin-bracket-auto-fill" class="admin-secondary" type="button">AUTO-FILL PLAYOFF TEAMS</button><button id="admin-bracket-advance-all" class="admin-secondary" type="button">ADVANCE COMPLETED</button><button id="admin-bracket-save" class="admin-primary admin-inline-button" type="button">SAVE BRACKET</button></div>
         </div>
         <div class="admin-toolbar">
           <select id="admin-bracket-season"><option value="Season 16">SEASON 16</option></select><button id="admin-delete-playoff-year" class="admin-secondary" type="button">DELETE YEAR</button>
@@ -195,7 +244,7 @@
           <span id="admin-bracket-status" class="admin-toolbar-count">No saved bracket loaded.</span>
         </div>
         <div id="admin-bracket-message" class="admin-message" aria-live="polite"></div>
-        <div class="admin-bracket-help">Set the teams and scores for each matchup. Use <strong>ADVANCE WINNERS</strong> after a round is complete to move winners into the next round.</div>
+        <div class="admin-bracket-help"><strong>HOW PLAYOFFS WORK:</strong> The bracket is a 16-team tournament: 8 Eastern + 8 Western teams. <strong>AUTO-FILL PLAYOFF TEAMS</strong> seeds the top 8 from each conference. Enter the final score for each matchup, then use <strong>ADVANCE</strong> (or <strong>ADVANCE COMPLETED</strong>) to move winners into the next round. <strong>SAVE BRACKET</strong> publishes the current bracket to the public Playoffs page.</div>
         <div id="admin-bracket" class="admin-bracket-board"></div>
       </section>
 
@@ -331,7 +380,55 @@
       <section id="admin-section-transactions" class="admin-section">
         <div class="admin-intro"><div><span class="admin-eyebrow">TRANSACTION MANAGEMENT</span><h2>TRANSACTIONS</h2></div><button id="admin-add-transaction" class="admin-primary admin-inline-button">+ ADD TRANSACTION</button></div>
         <div class="admin-toolbar"><select id="admin-transaction-type"><option value="all">ALL TYPES</option><option>TRADE</option><option>FREE AGENCY</option><option>WAIVER</option><option>RELEASE</option><option>SIGNING</option><option>OTHER</option></select><span id="admin-transaction-count" class="admin-toolbar-count">Loading transactions...</span></div><div id="admin-transaction-message" class="admin-message"></div><div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>DATE</th><th>TYPE</th><th>PLAYER</th><th>FROM</th><th>TO</th><th>DETAILS</th><th></th></tr></thead><tbody id="admin-transactions-body"></tbody></table></div>
-        <div id="admin-transaction-modal" class="admin-modal" hidden><div class="admin-modal-backdrop" data-close-transaction-modal></div><div class="admin-modal-card"><div class="admin-modal-header"><div><span class="admin-eyebrow">TRANSACTION RECORD</span><h3 id="admin-transaction-modal-title">ADD TRANSACTION</h3></div><button type="button" class="admin-modal-close" data-close-transaction-modal>×</button></div><form id="admin-transaction-form" class="admin-form"><input id="admin-transaction-id" type="hidden"><div class="admin-form-grid"><label>DATE<input id="admin-transaction-date" type="date"></label><label>SEASON<input id="admin-transaction-season" value="Season 16"></label><label>TYPE<select id="admin-transaction-type-edit"><option>TRADE</option><option>FREE AGENCY</option><option>WAIVER</option><option>RELEASE</option><option>SIGNING</option><option>OTHER</option></select></label><label>PLAYER<select id="admin-transaction-player"><option value="">NONE</option></select></label><label>FROM TEAM<select id="admin-transaction-from"><option value="">NONE</option></select></label><label>TO TEAM<select id="admin-transaction-to"><option value="">NONE</option></select></label><label>STATUS<select id="admin-transaction-status"><option>COMPLETED</option><option>PENDING</option><option>CANCELLED</option></select></label><label>DETAILS<textarea id="admin-transaction-details" rows="4"></textarea></label></div><p id="admin-transaction-form-error" class="admin-error"></p><div class="admin-form-actions"><button type="button" class="admin-secondary" data-close-transaction-modal>CANCEL</button><button class="admin-primary">SAVE TRANSACTION</button></div></form></div></div>
+        <div id="admin-transaction-modal" class="admin-modal" hidden><div class="admin-modal-backdrop" data-close-transaction-modal></div><div class="admin-modal-card"><div class="admin-modal-header"><div><span class="admin-eyebrow">TRANSACTION RECORD</span><h3 id="admin-transaction-modal-title">ADD TRANSACTION</h3></div><button type="button" class="admin-modal-close" data-close-transaction-modal>×</button></div><form id="admin-transaction-form" class="admin-form"><input id="admin-transaction-id" type="hidden"><div class="admin-form-grid"><label>DATE<input id="admin-transaction-date" type="date"></label><label>SEASON<input id="admin-transaction-season" value="Season 16"></label><label>TYPE<select id="admin-transaction-type-edit"><option>TRADE</option><option>FREE AGENCY</option><option>WAIVER</option><option>RELEASE</option><option>SIGNING</option><option>OTHER</option></select></label><label>PLAYER<select id="admin-transaction-player"><option value="">NONE</option></select></label><label>FROM TEAM<select id="admin-transaction-from"><option value="">NONE</option></select></label><label>TO TEAM<select id="admin-transaction-to"><option value="">NONE</option></select></label><label>STATUS<select id="admin-transaction-status"><option>COMPLETED</option><option>PENDING</option><option>CANCELLED</option></select></label><label class="admin-checkbox-label"><input id="admin-transaction-apply" type="checkbox" checked> APPLY ROSTER MOVE</label><label>DETAILS<textarea id="admin-transaction-details" rows="4"></textarea></label><p class="admin-help-text">When enabled and the transaction is completed, the player is moved to the TO TEAM. RELEASE clears the player's team. This section records the move; contracts are managed in CONTRACTS & CAP.</p></div><p id="admin-transaction-form-error" class="admin-error"></p><div class="admin-form-actions"><button type="button" class="admin-secondary" data-close-transaction-modal>CANCEL</button><button class="admin-primary">SAVE TRANSACTION</button></div></form></div></div>
+      </section>
+      <section id="admin-section-contracts" class="admin-section">
+        <div class="admin-intro">
+          <div><span class="admin-eyebrow">ROSTER FINANCES</span><h2>CONTRACTS & CAP</h2></div>
+          <div class="admin-contract-actions"><button id="admin-edit-cap" class="admin-secondary" type="button">EDIT SALARY CAP</button><button id="admin-add-contract" class="admin-primary admin-inline-button" type="button">+ ADD CONTRACT</button></div>
+        </div>
+        <div class="admin-contract-summary" id="admin-contract-summary"></div>
+        <div class="admin-toolbar">
+          <select id="admin-contract-season"><option value="16">SEASON 16</option></select>
+          <select id="admin-contract-team"><option value="all">ALL TEAMS</option></select>
+          <select id="admin-contract-status"><option value="ACTIVE">ACTIVE</option><option value="ALL">ALL CONTRACTS</option><option value="TERMINATED">TERMINATED</option><option value="EXPIRED">EXPIRED</option></select>
+          <span id="admin-contract-count" class="admin-toolbar-count">Loading contracts...</span>
+        </div>
+        <div id="admin-contract-message" class="admin-message" aria-live="polite"></div>
+        <div class="admin-table-wrap">
+          <table class="admin-table admin-contract-table">
+            <thead><tr><th>PLAYER</th><th>TEAM</th><th>AAV</th><th>TERM</th><th>ENDS</th><th>TYPE</th><th>STATUS</th><th></th></tr></thead>
+            <tbody id="admin-contracts-body"></tbody>
+          </table>
+        </div>
+        <div id="admin-contract-modal" class="admin-modal" hidden>
+          <div class="admin-modal-backdrop" data-close-contract-modal></div>
+          <div class="admin-modal-card" role="dialog" aria-modal="true" aria-labelledby="admin-contract-modal-title">
+            <div class="admin-modal-header"><div><span class="admin-eyebrow">PLAYER CONTRACT</span><h3 id="admin-contract-modal-title">ADD CONTRACT</h3></div><button type="button" class="admin-modal-close" data-close-contract-modal>×</button></div>
+            <form id="admin-contract-form" class="admin-form">
+              <input id="admin-contract-id" type="hidden">
+              <div class="admin-form-grid">
+                <label>PLAYER<select id="admin-contract-player" required><option value="">SELECT PLAYER</option></select></label>
+                <label>TEAM<select id="admin-contract-team-edit" required><option value="">SELECT TEAM</option></select></label>
+                <label>START SEASON<input id="admin-contract-start-season" type="number" min="1" value="16" required></label>
+                <label>TERM (YEARS)<input id="admin-contract-term" type="number" min="1" max="20" value="1" required></label>
+                <label>ANNUAL SALARY<input id="admin-contract-salary" type="number" min="0" step="1000" value="0" required></label>
+                <label>CONTRACT TYPE<select id="admin-contract-type-edit"><option>STANDARD</option><option>ENTRY LEVEL</option><option>EXTENSION</option><option>TWO-WAY</option><option>FRANCHISE</option></select></label>
+                <label>STATUS<select id="admin-contract-status-edit"><option>ACTIVE</option><option>TERMINATED</option><option>EXPIRED</option></select></label>
+                <label>SIGNED DATE<input id="admin-contract-signed-date" type="date"></label>
+                <label>NOTES<textarea id="admin-contract-notes" rows="4" placeholder="Optional contract notes..."></textarea></label>
+              </div>
+              <p class="admin-help-text">The annual salary is the player's cap hit in every season covered by the contract. A 3-year, $8M contract counts as $8M against the cap in each of its three seasons.</p>
+              <p id="admin-contract-form-error" class="admin-error"></p>
+              <div class="admin-form-actions"><button type="button" class="admin-secondary" data-close-contract-modal>CANCEL</button><button class="admin-primary">SAVE CONTRACT</button></div>
+            </form>
+          </div>
+        </div>
+        <div id="admin-cap-modal" class="admin-modal" hidden>
+          <div class="admin-modal-backdrop" data-close-cap-modal></div>
+          <div class="admin-modal-card"><div class="admin-modal-header"><div><span class="admin-eyebrow">LEAGUE FINANCES</span><h3>EDIT SALARY CAP</h3></div><button type="button" class="admin-modal-close" data-close-cap-modal>×</button></div>
+          <form id="admin-cap-form" class="admin-form"><div class="admin-form-grid"><label>SEASON<input id="admin-cap-season-name" value="Season 16" required></label><label>SALARY CAP<input id="admin-cap-value" type="number" min="0" step="1000" required></label><label>CURRENCY<select id="admin-cap-currency"><option>CAD</option><option>USD</option></select></label></div><p id="admin-cap-form-error" class="admin-error"></p><div class="admin-form-actions"><button type="button" class="admin-secondary" data-close-cap-modal>CANCEL</button><button class="admin-primary">SAVE CAP</button></div></form></div>
+        </div>
       </section>
       <section id="admin-section-news" class="admin-section">
         <div class="admin-intro"><div><span class="admin-eyebrow">CONTENT MANAGEMENT</span><h2>NEWS / FEED</h2></div><button id="admin-add-news" class="admin-primary admin-inline-button">+ NEW POST</button></div><div id="admin-news-message" class="admin-message"></div><div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>TITLE</th><th>TYPE</th><th>TEAM</th><th>STATUS</th><th>DATE</th><th></th></tr></thead><tbody id="admin-news-body"></tbody></table></div>

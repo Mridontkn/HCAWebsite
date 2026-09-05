@@ -93,10 +93,37 @@
   }
 
   async function autoFill(){
-    const sorted=[...teams].sort((a,b)=>Number(b.points||0)-Number(a.points||0)||Number(b.wins||0)-Number(a.wins||0)||String(a.name).localeCompare(String(b.name))).slice(0,16);
+    const score=(a,b)=>Number(b.points||0)-Number(a.points||0)||Number(b.wins||0)-Number(a.wins||0)||String(a.name).localeCompare(String(b.name));
+    const conferences=[...new Set(teams.map(t=>String(t.conference||"").trim()).filter(Boolean))];
+    let east=teams.filter(t=>String(t.conference||"").toLowerCase().includes("east")).sort(score).slice(0,8);
+    let west=teams.filter(t=>String(t.conference||"").toLowerCase().includes("west")).sort(score).slice(0,8);
+    if(east.length<8||west.length<8){
+      const sorted=[...teams].sort(score).slice(0,16);
+      east=sorted.slice(0,8); west=sorted.slice(8,16);
+    }
+    const pair=(list,offset)=>{
+      const seedPairs=[[0,7],[3,4],[1,6],[2,5]];
+      seedPairs.forEach(([a,b],i)=>{const g=bracket.r1[offset+i];g.team1_id=list[a]?.id||"";g.team2_id=list[b]?.id||"";});
+    };
     bracket=createEmptyBracket();
-    sorted.forEach((t,i)=>{const m=Math.floor(i/2),slot=i%2;bracket.r1[m][slot===0?"team1_id":"team2_id"]=t.id;});
-    renderBracket();message("Top 16 teams loaded by current team points. Review the matchups before saving.","success");
+    pair(east,0); pair(west,4);
+    renderBracket();message(`Loaded ${east.length} Eastern and ${west.length} Western playoff teams. Review the seeds before saving.`,"success");
+  }
+
+  function advanceAllCompleted(){
+    syncFromDom();
+    let advanced=0;
+    rounds.slice(0,-1).forEach((round,roundIndex)=>{
+      const next=rounds[roundIndex+1].key;
+      bracket[round.key].forEach((game,index)=>{
+        const win=winner(game); if(!win)return;
+        const nextIndex=Math.floor(index/2),slot=index%2;
+        bracket[next][nextIndex][slot===0?"team1_id":"team2_id"]=win;
+        advanced++;
+      });
+    });
+    renderBracket();
+    message(advanced?`Advanced ${advanced} completed matchup${advanced===1?"":"s"}. Save the bracket when you're ready.`:"No completed matchups were ready to advance.",advanced?"success":"error");
   }
 
   document.addEventListener("click",e=>{
@@ -104,6 +131,7 @@
     const adv=e.target.closest("[data-advance-match]");if(adv){const [r,i]=adv.dataset.advanceMatch.split(":");advanceMatch(r,Number(i));return;}
     if(e.target.closest("#admin-bracket-save")){void save();return;}
     if(e.target.closest("#admin-bracket-auto-fill")){void autoFill();return;}
+    if(e.target.closest("#admin-bracket-advance-all")){advanceAllCompleted();return;}
   });
   document.addEventListener("change",e=>{if(e.target.id==="admin-bracket-round")renderBracket();if(e.target.closest(".admin-bracket-match"))syncFromDom();if(e.target.id==="admin-bracket-season")void loadSaved();});
   if(document.getElementById("admin-section-playoffs")?.classList.contains("active")){void loadTeams();}

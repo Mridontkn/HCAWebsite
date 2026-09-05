@@ -22,6 +22,17 @@
   let games = [];
   let gameGoalEvents = [];
 
+  const NHL_TEAMS = [
+    ["ANA", "ANAHEIM DUCKS"], ["BOS", "BOSTON BRUINS"], ["BUF", "BUFFALO SABRES"], ["CGY", "CALGARY FLAMES"],
+    ["CAR", "CAROLINA HURRICANES"], ["CHI", "CHICAGO BLACKHAWKS"], ["COL", "COLORADO AVALANCHE"], ["CBJ", "COLUMBUS BLUE JACKETS"],
+    ["DAL", "DALLAS STARS"], ["DET", "DETROIT RED WINGS"], ["EDM", "EDMONTON OILERS"], ["FLA", "FLORIDA PANTHERS"],
+    ["LAK", "LOS ANGELES KINGS"], ["MIN", "MINNESOTA WILD"], ["MTL", "MONTREAL CANADIENS"], ["NSH", "NASHVILLE PREDATORS"],
+    ["NJD", "NEW JERSEY DEVILS"], ["NYI", "NEW YORK ISLANDERS"], ["NYR", "NEW YORK RANGERS"], ["OTT", "OTTAWA SENATORS"],
+    ["PHI", "PHILADELPHIA FLYERS"], ["PIT", "PITTSBURGH PENGUINS"], ["SJS", "SAN JOSE SHARKS"], ["SEA", "SEATTLE KRAKEN"],
+    ["STL", "ST. LOUIS BLUES"], ["TBL", "TAMPA BAY LIGHTNING"], ["TOR", "TORONTO MAPLE LEAFS"], ["UTA", "UTAH MAMMOTH"],
+    ["VAN", "VANCOUVER CANUCKS"], ["VGK", "VEGAS GOLDEN KNIGHTS"], ["WSH", "WASHINGTON CAPITALS"], ["WPG", "WINNIPEG JETS"]
+  ];
+
   function showLogin(message = "") {
     loginView.hidden = false;
     appView.hidden = true;
@@ -54,6 +65,7 @@
       games: "GAMES",
       playoffs: "PLAYOFFS",
       transactions: "TRANSACTIONS",
+      contracts: "CONTRACTS & CAP",
       news: "NEWS",
       users: "USERS"
     };
@@ -103,6 +115,76 @@
         element.textContent = "—";
       }
     }));
+  }
+
+  function normalizePlayerName(name) {
+    return String(name || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/\b(jr|sr|ii|iii|iv|v)\b/g, "")
+      .replace(/[^a-z0-9]/g, "")
+      .trim();
+  }
+
+  function fillNhlTeamSelect() {
+    const select = document.getElementById("admin-nhl-team");
+    if (!select || select.options.length > 1) return;
+    for (const [code, name] of NHL_TEAMS) {
+      const option = document.createElement("option");
+      option.value = code;
+      option.textContent = `${name} (${code})`;
+      select.appendChild(option);
+    }
+  }
+
+  function renderNhlImportResults(result) {
+    const el = document.getElementById("admin-nhl-import-results");
+    if (!el) return;
+    const rows = result.matches || [];
+    el.hidden = false;
+    if (!rows.length) {
+      el.innerHTML = `<div class="admin-nhl-empty">No matching NHL players were found.</div>`;
+      return;
+    }
+    el.innerHTML = rows.map(row => `
+      <div class="admin-nhl-result-row">
+        <span><strong>${escapeHTML(row.hca_name || row.nhl_name || "Unknown")}</strong>${row.nhl_name && row.hca_name !== row.nhl_name ? ` <small>← ${escapeHTML(row.nhl_name)}</small>` : ""}</span>
+        <span>${escapeHTML(row.team || "NHL")} · #${escapeHTML(row.nhl_id || "—")}</span>
+      </div>`).join("");
+  }
+
+  async function importNhlHeadshots() {
+    const button = document.getElementById("admin-import-nhl-headshots");
+    const message = document.getElementById("admin-nhl-import-message");
+    if (!button || !message) return;
+
+    fillNhlTeamSelect();
+    const team = document.getElementById("admin-nhl-team")?.value || "ALL";
+    button.disabled = true;
+    button.textContent = "IMPORTING...";
+    message.className = "admin-message";
+    message.textContent = `Fetching ${team === "ALL" ? "all 32 NHL rosters" : `${team} roster`} through Supabase...`;
+
+    try {
+      const { data, error } = await client.functions.invoke("import-nhl-headshots", {
+        body: { team }
+      });
+      if (error) throw error;
+      if (!data?.ok) throw new Error(data?.error || "The NHL import failed.");
+
+      message.className = "admin-message success";
+      message.textContent = `Imported ${data.updated_count} headshots. Matched ${data.matched_count} HCA players. ${data.failed_teams?.length || 0} NHL roster requests failed.`;
+      renderNhlImportResults(data);
+      await Promise.all([loadPlayers(), loadOverview()]);
+    } catch (error) {
+      console.error("HCA Admin: NHL headshot import failed:", error);
+      message.className = "admin-message error";
+      message.textContent = error?.message || "Could not import NHL headshots.";
+    } finally {
+      button.disabled = false;
+      button.textContent = "IMPORT HEADSHOTS";
+    }
   }
 
   function positionText(position) {
@@ -215,6 +297,7 @@
         potential_rating,
         years_left_to_grow,
         status,
+        headshot_url,
         season_stats
       `)
       .order("player_name", { ascending: true });
@@ -272,6 +355,16 @@
     document.getElementById("admin-stat-saves").value = stats.saves ?? "";
     document.getElementById("admin-stat-shutouts").value = stats.shutouts ?? "";
 
+    const headshotFile = document.getElementById("admin-player-headshot-file");
+    const headshotStatus = document.getElementById("admin-player-headshot-status");
+    if (headshotFile) headshotFile.value = "";
+    if (headshotStatus) {
+      headshotStatus.textContent = player?.headshot_url
+        ? "Current headshot loaded. Choose a new file to replace it."
+        : "No headshot is currently saved.";
+    }
+    updatePlayerHeadshotPreview(player?.headshot_url || "");
+
     populateTeamSelect(player?.team_id || "");
     document.getElementById("admin-player-form-error").textContent = "";
     modal.hidden = false;
@@ -294,6 +387,66 @@
       .filter(Boolean);
 
     return parts;
+  }
+
+  async function uploadPlayerHeadshot(playerId, file) {
+    if (!file) return null;
+
+    if (!file.type.startsWith("image/")) {
+      throw new Error("Please choose a valid image file.");
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      throw new Error("Headshots must be 5 MB or smaller.");
+    }
+
+    const extension = (
+      file.name.split(".").pop() ||
+      file.type.split("/").pop() ||
+      "jpg"
+    ).toLowerCase().replace(/[^a-z0-9]/g, "");
+
+    const path = `${playerId}/${Date.now()}-${crypto.randomUUID()}.${extension}`;
+
+    const { error: uploadError } = await client
+      .storage
+      .from("player-headshots")
+      .upload(path, file, {
+        cacheControl: "3600",
+        upsert: false,
+        contentType: file.type
+      });
+
+    if (uploadError) {
+      throw new Error(`Headshot upload failed: ${uploadError.message}`);
+    }
+
+    const { data } = client
+      .storage
+      .from("player-headshots")
+      .getPublicUrl(path);
+
+    if (!data?.publicUrl) {
+      throw new Error("The headshot uploaded, but Supabase did not return a public URL.");
+    }
+
+    return data.publicUrl;
+  }
+
+  function updatePlayerHeadshotPreview(url = "") {
+    const image = document.getElementById("admin-player-headshot-preview");
+    const empty = document.getElementById("admin-player-headshot-preview-empty");
+    if (!image || !empty) return;
+
+    if (url) {
+      image.src = url;
+      image.hidden = false;
+      empty.hidden = true;
+    } else {
+      image.removeAttribute("src");
+      image.hidden = true;
+      empty.hidden = false;
+    }
   }
 
   async function savePlayer(event) {
@@ -324,6 +477,20 @@
       const { data: sessionData } = await client.auth.getSession();
       const currentUserId = sessionData.session?.user?.id || null;
       const now = new Date().toISOString();
+
+      // Generate the ID before uploading so new players can have a stable storage path.
+      const playerId = editingPlayerId || crypto.randomUUID();
+      const headshotFile = document.getElementById("admin-player-headshot-file")?.files?.[0] || null;
+      const headshotStatus = document.getElementById("admin-player-headshot-status");
+
+      if (headshotFile && headshotStatus) {
+        headshotStatus.textContent = "Uploading headshot...";
+      }
+
+      const uploadedHeadshotUrl = headshotFile
+        ? await uploadPlayerHeadshot(playerId, headshotFile)
+        : null;
+
       const payload = {
         player_name: document.getElementById("admin-player-name").value.trim(),
         team_id: teamId,
@@ -338,6 +505,10 @@
         updated_date: now
       };
 
+      if (uploadedHeadshotUrl) {
+        payload.headshot_url = uploadedHeadshotUrl;
+      }
+
       if (!payload.player_name) throw new Error("Player name is required.");
 
       let result;
@@ -349,7 +520,7 @@
           .select("id")
           .single();
       } else {
-        payload.id = crypto.randomUUID();
+        payload.id = playerId;
         payload.created_date = now;
         payload.created_by_id = currentUserId;
         payload.is_sample = false;
@@ -1226,7 +1397,38 @@
     }
   });
 
+  fillNhlTeamSelect();
+  document.getElementById("admin-import-nhl-headshots")?.addEventListener("click", importNhlHeadshots);
   document.getElementById("admin-player-form")?.addEventListener("submit", savePlayer);
+
+  document.getElementById("admin-player-headshot-file")?.addEventListener("change", event => {
+    const file = event.target.files?.[0];
+    const status = document.getElementById("admin-player-headshot-status");
+
+    if (!file) {
+      if (status) status.textContent = "";
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      event.target.value = "";
+      if (status) status.textContent = "Please choose an image file.";
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      event.target.value = "";
+      if (status) status.textContent = "Headshots must be 5 MB or smaller.";
+      return;
+    }
+
+    if (status) status.textContent = `${file.name} ready to upload.`;
+
+    const reader = new FileReader();
+    reader.onload = () => updatePlayerHeadshotPreview(String(reader.result || ""));
+    reader.readAsDataURL(file);
+  });
+
   document.getElementById("admin-game-form")?.addEventListener("submit", saveGame);
 
   client.auth.onAuthStateChange((_event, session) => {

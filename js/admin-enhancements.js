@@ -107,8 +107,93 @@
   function populateTransactionSelects(){const p=document.getElementById('admin-transaction-player');if(p){const cur=p.value;p.innerHTML='<option value="">NONE</option>'+playerCache.map(x=>`<option value="${esc(x.id)}">${esc(x.player_name)}</option>`).join('');p.value=cur;}['admin-transaction-from','admin-transaction-to'].forEach(id=>{const s=document.getElementById(id);if(s){const cur=s.value;s.innerHTML=teamOptions('',true);s.value=cur;}})}
   function openTransaction(x=null){const m=document.getElementById('admin-transaction-modal');if(!m)return;document.getElementById('admin-transaction-id').value=x?.id||'';document.getElementById('admin-transaction-date').value=x?.transaction_date||new Date().toISOString().slice(0,10);document.getElementById('admin-transaction-season').value=x?.season||'Season 16';document.getElementById('admin-transaction-type-edit').value=x?.type||'TRADE';document.getElementById('admin-transaction-player').value=x?.player_id||'';document.getElementById('admin-transaction-from').value=x?.from_team_id||'';document.getElementById('admin-transaction-to').value=x?.to_team_id||'';document.getElementById('admin-transaction-status').value=x?.status||'COMPLETED';document.getElementById('admin-transaction-details').value=x?.details||'';document.getElementById('admin-transaction-form-error').textContent='';m.hidden=false;document.body.classList.add('admin-modal-open')}
   function closeTransaction(){const m=document.getElementById('admin-transaction-modal');if(m)m.hidden=true;document.body.classList.remove('admin-modal-open')}
-  async function saveTransaction(e){e.preventDefault();const err=document.getElementById('admin-transaction-form-error');err.textContent='';try{const id=document.getElementById('admin-transaction-id').value;const payload={season:document.getElementById('admin-transaction-season').value.trim()||'Season 16',transaction_date:document.getElementById('admin-transaction-date').value||null,type:document.getElementById('admin-transaction-type-edit').value,player_id:document.getElementById('admin-transaction-player').value||null,from_team_id:document.getElementById('admin-transaction-from').value||null,to_team_id:document.getElementById('admin-transaction-to').value||null,details:document.getElementById('admin-transaction-details').value.trim()||null,status:document.getElementById('admin-transaction-status').value};const {error}=id?await c.from('transactions').update(payload).eq('id',id):await c.from('transactions').insert(payload);if(error)throw error;closeTransaction();await loadTransactions()}catch(x){err.textContent=x.message||'Could not save transaction.'}}
+  async function saveTransaction(e){
+    e.preventDefault();const err=document.getElementById('admin-transaction-form-error');err.textContent='';
+    try{
+      const id=document.getElementById('admin-transaction-id').value;
+      const type=document.getElementById('admin-transaction-type-edit').value;
+      const playerId=document.getElementById('admin-transaction-player').value||null;
+      const fromTeam=document.getElementById('admin-transaction-from').value||null;
+      const toTeam=document.getElementById('admin-transaction-to').value||null;
+      const status=document.getElementById('admin-transaction-status').value;
+      const apply=document.getElementById('admin-transaction-apply')?.checked;
+      const payload={season:document.getElementById('admin-transaction-season').value.trim()||'Season 16',transaction_date:document.getElementById('admin-transaction-date').value||null,type,player_id:playerId,from_team_id:fromTeam,to_team_id:toTeam,details:document.getElementById('admin-transaction-details').value.trim()||null,status};
+      const {error}=id?await c.from('transactions').update(payload).eq('id',id):await c.from('transactions').insert(payload);if(error)throw error;
+      if(apply&&status==='COMPLETED'&&playerId){
+        const target=type==='RELEASE'?null:toTeam;
+        const team=target?teamCache.find(t=>String(t.id)===String(target)):null;
+        const {error:pe}=await c.from('players').update({team_id:target,team_name:team?.name||null,status:target?'Active':'Free Agent'}).eq('id',playerId);if(pe)throw pe;
+      }
+      closeTransaction();await loadPlayerCache();await loadTransactions();
+    }catch(x){err.textContent=x.message||'Could not save transaction.'}
+  }
   async function deleteTransaction(id){if(!confirm('Delete this transaction?'))return;const {error}=await c.from('transactions').delete().eq('id',id);if(error){alert(error.message);return}await loadTransactions()}
+
+  /* ---------------- CONTRACTS + CAP ---------------- */
+  let contractRows = [], capSettings = [];
+  const seasonNumber = v => Number(String(v || '').match(/\d+/)?.[0] || 16);
+  const money = v => new Intl.NumberFormat('en-CA',{style:'currency',currency:'CAD',maximumFractionDigits:0}).format(Number(v)||0);
+  const contractEnd = x => Number(x.start_season || 16) + Math.max(1,Number(x.term_years)||1) - 1;
+  const activeContract = (x,n) => x.status === 'ACTIVE' && n >= Number(x.start_season||16) && n <= contractEnd(x);
+
+  async function loadCapSettings(){
+    const {data,error}=await c.from('league_settings').select('season,salary_cap,currency').order('season',{ascending:false});
+    if(error) throw error;
+    capSettings=data||[];
+    const select=document.getElementById('admin-contract-season');
+    if(select){const cur=select.value;select.innerHTML=capSettings.map(x=>`<option value="${seasonNumber(x.season)}">${esc(x.season)}</option>`).join('')||'<option value="16">SEASON 16</option>';if([...select.options].some(o=>o.value===cur))select.value=cur;}
+  }
+  function populateContractSelects(){
+    const p=document.getElementById('admin-contract-player');
+    if(p){const cur=p.value;p.innerHTML='<option value="">SELECT PLAYER</option>'+playerCache.map(x=>`<option value="${esc(x.id)}">${esc(x.player_name)}</option>`).join('');p.value=cur;}
+    const t=document.getElementById('admin-contract-team-edit');
+    if(t){const cur=t.value;t.innerHTML='<option value="">SELECT TEAM</option>'+teamCache.map(x=>`<option value="${esc(x.id)}">${esc(clean(x.name))}</option>`).join('');t.value=cur;}
+    const filter=document.getElementById('admin-contract-team');
+    if(filter){const cur=filter.value;filter.innerHTML='<option value="all">ALL TEAMS</option>'+teamCache.map(x=>`<option value="${esc(x.id)}">${esc(clean(x.name))}</option>`).join('');filter.value=cur;}
+  }
+  async function loadContracts(){
+    const body=document.getElementById('admin-contracts-body');if(!body)return;
+    body.innerHTML='<tr><td colspan="8" class="admin-table-empty">Loading contracts...</td></tr>';
+    const {data,error}=await c.from('player_contracts').select('id,player_id,team_id,season,start_season,term_years,annual_salary,contract_type,status,signed_date,notes,players(player_name),teams(name)').order('annual_salary',{ascending:false});
+    if(error){body.innerHTML='<tr><td colspan="8" class="admin-table-empty">Run the contracts/cap setup SQL first.</td></tr>';return;}
+    contractRows=data||[];populateContractSelects();renderContracts();renderCapSummary();
+  }
+  function renderContracts(){
+    const body=document.getElementById('admin-contracts-body');if(!body)return;
+    const n=Number(document.getElementById('admin-contract-season')?.value||16),team=document.getElementById('admin-contract-team')?.value||'all',status=document.getElementById('admin-contract-status')?.value||'ACTIVE';
+    let rows=contractRows.filter(x=>n>=Number(x.start_season||16)&&n<=contractEnd(x));
+    if(status!=='ALL')rows=rows.filter(x=>x.status===status);if(team!=='all')rows=rows.filter(x=>String(x.team_id)===String(team));
+    document.getElementById('admin-contract-count').textContent=`SHOWING ${rows.length} OF ${contractRows.length} CONTRACTS`;
+    body.innerHTML=rows.map(x=>`<tr><td><strong>${esc(x.players?.player_name||'Unknown Player')}</strong></td><td>${esc(clean(x.teams?.name||'Free Agent'))}</td><td><strong>${money(x.annual_salary)}</strong></td><td>${x.term_years} YR</td><td>SEASON ${contractEnd(x)}</td><td>${esc(x.contract_type||'STANDARD')}</td><td>${esc(x.status||'—')}</td><td><button class="admin-table-action" data-edit-contract="${esc(x.id)}">EDIT</button> <button class="admin-table-action admin-table-danger" data-delete-contract="${esc(x.id)}">DELETE</button></td></tr>`).join('')||'<tr><td colspan="8" class="admin-table-empty">No contracts match this filter.</td></tr>';
+  }
+  function renderCapSummary(){
+    const el=document.getElementById('admin-contract-summary');if(!el)return;
+    const n=Number(document.getElementById('admin-contract-season')?.value||16),filter=document.getElementById('admin-contract-team')?.value||'all';
+    const setting=capSettings.find(x=>seasonNumber(x.season)===n),cap=Number(setting?.salary_cap)||0;
+    const list=teamCache.filter(t=>filter==='all'||String(t.id)===String(filter));
+    el.innerHTML=list.map(t=>{const payroll=contractRows.filter(x=>String(x.team_id)===String(t.id)&&activeContract(x,n)).reduce((sum,x)=>sum+Number(x.annual_salary||0),0),space=cap-payroll;return `<article><span>${esc(clean(t.name))}</span><strong>${money(payroll)}</strong><small>CAP HIT · ${money(cap)} CAP · <b class="${space<0?'cap-over':''}">${money(space)} ${space<0?'OVER':'SPACE'}</b></small></article>`}).join('');
+  }
+  function openContract(x=null){
+    const m=document.getElementById('admin-contract-modal');if(!m)return;populateContractSelects();
+    document.getElementById('admin-contract-id').value=x?.id||'';document.getElementById('admin-contract-modal-title').textContent=x?'EDIT CONTRACT':'ADD CONTRACT';
+    document.getElementById('admin-contract-player').value=x?.player_id||'';document.getElementById('admin-contract-team-edit').value=x?.team_id||'';document.getElementById('admin-contract-start-season').value=x?.start_season||16;document.getElementById('admin-contract-term').value=x?.term_years||1;document.getElementById('admin-contract-salary').value=x?.annual_salary||0;document.getElementById('admin-contract-type-edit').value=x?.contract_type||'STANDARD';document.getElementById('admin-contract-status-edit').value=x?.status||'ACTIVE';document.getElementById('admin-contract-signed-date').value=x?.signed_date||'';document.getElementById('admin-contract-notes').value=x?.notes||'';document.getElementById('admin-contract-form-error').textContent='';m.hidden=false;document.body.classList.add('admin-modal-open');
+  }
+  function closeContract(){const m=document.getElementById('admin-contract-modal');if(m)m.hidden=true;document.body.classList.remove('admin-modal-open');}
+  async function saveContract(e){
+    e.preventDefault();const err=document.getElementById('admin-contract-form-error');err.textContent='';
+    try{
+      const id=document.getElementById('admin-contract-id').value,playerId=document.getElementById('admin-contract-player').value,teamId=document.getElementById('admin-contract-team-edit').value,start=Number(document.getElementById('admin-contract-start-season').value),term=Number(document.getElementById('admin-contract-term').value),salary=Number(document.getElementById('admin-contract-salary').value);
+      if(!playerId||!teamId)throw new Error('Select a player and team.');if(!Number.isInteger(start)||start<1)throw new Error('Start season must be valid.');if(!Number.isInteger(term)||term<1)throw new Error('Term must be at least 1 year.');if(!Number.isFinite(salary)||salary<0)throw new Error('Salary must be zero or greater.');
+      const {data:session}=await c.auth.getSession();const payload={player_id:playerId,team_id:teamId,season:`Season ${start}`,start_season:start,term_years:term,annual_salary:salary,contract_type:document.getElementById('admin-contract-type-edit').value,status:document.getElementById('admin-contract-status-edit').value,signed_date:document.getElementById('admin-contract-signed-date').value||null,notes:document.getElementById('admin-contract-notes').value.trim()||null,created_by_id:session.session?.user?.id||null,updated_at:new Date().toISOString()};
+      const {error}=id?await c.from('player_contracts').update(payload).eq('id',id):await c.from('player_contracts').insert(payload);if(error)throw error;
+      if(payload.status==='ACTIVE'){const team=teamCache.find(t=>String(t.id)===String(teamId));const {error:pe}=await c.from('players').update({team_id:teamId,team_name:team?.name||null,status:'Active'}).eq('id',playerId);if(pe)throw pe;}
+      closeContract();await loadTeamCache();await loadPlayerCache();await loadContracts();
+    }catch(x){err.textContent=x.message||'Could not save contract.';}
+  }
+  async function deleteContract(id){if(!confirm('Delete this contract?'))return;const {error}=await c.from('player_contracts').delete().eq('id',id);if(error){alert(error.message);return}await loadContracts();}
+  function openCap(){const m=document.getElementById('admin-cap-modal');if(!m)return;const n=Number(document.getElementById('admin-contract-season')?.value||16),setting=capSettings.find(x=>seasonNumber(x.season)===n);document.getElementById('admin-cap-season-name').value=setting?.season||`Season ${n}`;document.getElementById('admin-cap-value').value=setting?.salary_cap??100000000;document.getElementById('admin-cap-currency').value=setting?.currency||'CAD';document.getElementById('admin-cap-form-error').textContent='';m.hidden=false;document.body.classList.add('admin-modal-open');}
+  function closeCap(){const m=document.getElementById('admin-cap-modal');if(m)m.hidden=true;document.body.classList.remove('admin-modal-open');}
+  async function saveCap(e){e.preventDefault();const err=document.getElementById('admin-cap-form-error');err.textContent='';try{const season=document.getElementById('admin-cap-season-name').value.trim(),salary=Number(document.getElementById('admin-cap-value').value),currency=document.getElementById('admin-cap-currency').value;if(!season||!Number.isFinite(salary)||salary<0)throw new Error('Enter a valid season and salary cap.');const {error}=await c.from('league_settings').upsert({season,salary_cap:salary,currency,updated_at:new Date().toISOString()},{onConflict:'season'});if(error)throw error;closeCap();await loadCapSettings();document.getElementById('admin-contract-season').value=seasonNumber(season);renderContracts();renderCapSummary();}catch(x){err.textContent=x.message||'Could not save salary cap.';}}
 
   /* ---------------- NEWS / FEED ---------------- */
   async function loadNews(){const body=document.getElementById('admin-news-body');if(!body)return;const {data,error}=await c.from('news_posts').select('id,title,post_type,team_id,published,published_at,created_at,teams(name)').order('created_at',{ascending:false});if(error){body.innerHTML='<tr><td colspan="6" class="admin-table-empty">Run the HCA v12 setup SQL to enable the feed.</td></tr>';return}newsRows=data||[];body.innerHTML=newsRows.map(x=>`<tr><td><strong>${esc(x.title)}</strong></td><td>${esc(x.post_type||'NEWS')}</td><td>${esc(clean(x.teams?.name||'League-wide'))}</td><td>${x.published?'PUBLISHED':'DRAFT'}</td><td>${esc(x.published_at?new Date(x.published_at).toLocaleDateString():'—')}</td><td><button class="admin-table-action" data-edit-news="${esc(x.id)}">EDIT</button> <button class="admin-table-action admin-table-danger" data-delete-news="${esc(x.id)}">DELETE</button></td></tr>`).join('')||'<tr><td colspan="6" class="admin-table-empty">No posts yet.</td></tr>';}
@@ -129,7 +214,7 @@
   async function addPlayoffYear(){const season=prompt('Enter the playoff season name, e.g. Season 17:','Season 17');if(!season?.trim())return;const value=season.trim();const {error}=await c.from('playoff_years').upsert({season:value,display_name:`${value} Playoffs`,enabled:true},{onConflict:'season'});if(error){alert(error.message);return}const {error:be}=await c.from('playoff_brackets').upsert({season:value,name:`HCA ${value} Playoffs`,bracket_data:{rounds:{r1:Array.from({length:8},()=>({team1_id:'',team2_id:'',score1:null,score2:null})),r2:Array.from({length:4},()=>({team1_id:'',team2_id:'',score1:null,score2:null})),r3:Array.from({length:2},()=>({team1_id:'',team2_id:'',score1:null,score2:null})),r4:[{team1_id:'',team2_id:'',score1:null,score2:null}]}}},{onConflict:'season'});if(be){alert(be.message);return}await loadPlayoffYears();document.getElementById('admin-bracket-season').value=value;document.getElementById('admin-bracket-season').dispatchEvent(new Event('change'))}
   async function deletePlayoffYear(){const s=document.getElementById('admin-bracket-season').value;if(!s||!confirm(`Delete ${s} playoff year and bracket?`))return;await c.from('playoff_brackets').delete().eq('season',s);await c.from('playoff_years').delete().eq('season',s);await loadPlayoffYears();document.getElementById('admin-bracket-season').dispatchEvent(new Event('change'))}
 
-  async function loadSection(name){try{if(name==='teams')await loadAdminTeams();if(name==='transactions'){await loadTeamCache();await loadPlayerCache();await loadTransactions()}if(name==='news'){await loadTeamCache();await loadNews()}if(name==='users'){await loadTeamCache();await loadUsers()}if(name==='playoffs'){await loadPlayoffYears();document.getElementById('admin-bracket-season')?.dispatchEvent(new Event('change'))}}catch(e){console.error('HCA admin enhancement:',e)}}
+  async function loadSection(name){try{if(name==='teams')await loadAdminTeams();if(name==='transactions'){await loadTeamCache();await loadPlayerCache();await loadTransactions()}if(name==='contracts'){await loadTeamCache();await loadPlayerCache();await loadCapSettings();await loadContracts()}if(name==='news'){await loadTeamCache();await loadNews()}if(name==='users'){await loadTeamCache();await loadUsers()}if(name==='playoffs'){await loadPlayoffYears();document.getElementById('admin-bracket-season')?.dispatchEvent(new Event('change'))}}catch(e){console.error('HCA admin enhancement:',e)}}
   document.addEventListener('click',e=>{
     const section=e.target.closest('[data-section]');if(section)void loadSection(section.dataset.section);
     if(e.target.closest('#admin-add-team'))openTeam();
@@ -139,6 +224,12 @@
     const ex=e.target.closest('[data-edit-transaction]');if(ex)openTransaction(txRows.find(x=>String(x.id)===String(ex.dataset.editTransaction)));
     if(e.target.closest('[data-delete-transaction]'))void deleteTransaction(e.target.closest('[data-delete-transaction]').dataset.deleteTransaction);
     if(e.target.closest('[data-close-transaction-modal]'))closeTransaction();
+    if(e.target.closest('#admin-add-contract'))openContract();
+    const ec=e.target.closest('[data-edit-contract]');if(ec)openContract(contractRows.find(x=>String(x.id)===String(ec.dataset.editContract)));
+    if(e.target.closest('[data-delete-contract]'))void deleteContract(e.target.closest('[data-delete-contract]').dataset.deleteContract);
+    if(e.target.closest('[data-close-contract-modal]'))closeContract();
+    if(e.target.closest('#admin-edit-cap'))openCap();
+    if(e.target.closest('[data-close-cap-modal]'))closeCap();
     if(e.target.closest('#admin-add-news'))openNews();
     const en=e.target.closest('[data-edit-news]');if(en)openNews(newsRows.find(x=>String(x.id)===String(en.dataset.editNews)));
     if(e.target.closest('[data-delete-news]'))void deleteNews(e.target.closest('[data-delete-news]').dataset.deleteNews);
@@ -149,7 +240,7 @@
     if(e.target.closest('#admin-add-playoff-year'))void addPlayoffYear();
     if(e.target.closest('#admin-delete-playoff-year'))void deletePlayoffYear();
   });
-  document.addEventListener('change',e=>{if(e.target.id==='admin-transaction-type')renderTransactions()});
+  document.addEventListener('change',e=>{if(e.target.id==='admin-transaction-type')renderTransactions();if(['admin-contract-season','admin-contract-team','admin-contract-status'].includes(e.target.id)){renderContracts();renderCapSummary();}});
   document.getElementById('admin-team-form')?.addEventListener('submit',saveTeam);
   document.getElementById('admin-team-logo')?.addEventListener('input',e=>updateTeamLogoPreview(e.target.value.trim()));
   document.getElementById('admin-team-logo-file')?.addEventListener('change',e=>{
@@ -157,6 +248,8 @@
     updateTeamLogoPreview(URL.createObjectURL(file));
   });
   document.getElementById('admin-transaction-form')?.addEventListener('submit',saveTransaction);
+  document.getElementById('admin-contract-form')?.addEventListener('submit',saveContract);
+  document.getElementById('admin-cap-form')?.addEventListener('submit',saveCap);
   document.getElementById('admin-news-form')?.addEventListener('submit',saveNews);
   document.getElementById('admin-user-form')?.addEventListener('submit',saveUser);
   document.addEventListener('hca:admin-ready',()=>loadSection('dashboard'));

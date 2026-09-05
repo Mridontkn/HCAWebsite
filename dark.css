@@ -235,3 +235,27 @@ body.hca-dark .admin-login input { background:#202020; color:#f2f2ef; border-col
 body.hca-dark .admin-login input:focus,
 body.hca-dark .admin-form input:focus,
 body.hca-dark .admin-form select:focus { border-color:#f2f2ef; }
+
+/* Standings + public playoffs dark-mode fixes */
+body.hca-dark .hca-standings-page{background:#101010!important;color:#f2f2ef!important}
+body.hca-dark .hca-standings-header h1{color:#f2f2ef!important}
+body.hca-dark .hca-standings-header p,
+body.hca-dark .hca-standings-eyebrow,
+body.hca-dark .hca-standings-status{color:#9b9b96!important}
+body.hca-dark .hca-standings-header select{background:#171717!important;color:#f2f2ef!important;border-color:#454543!important}
+body.hca-dark .hca-standings-table-wrap{background:#171717!important;border-top-color:#f2f2ef!important}
+body.hca-dark .hca-standings-table th{background:#202020!important;color:#9b9b96!important}
+body.hca-dark .hca-standings-table td{background:#171717!important;color:#9b9b96!important;border-color:#343432!important}
+body.hca-dark .hca-standings-table tbody tr:hover td{background:#222!important}
+body.hca-dark .hca-standings-table .hca-standings-team,
+body.hca-dark .hca-standings-table .hca-team-link,
+body.hca-dark .hca-standings-table .hca-standings-points,
+body.hca-dark .hca-standings-table .hca-standings-diff-positive{color:#f2f2ef!important}
+body.hca-dark .hca-standings-table .hca-standings-diff-negative{color:#9b9b96!important}
+body.hca-dark .public-match{background:#171717!important;color:#f2f2ef!important;border-color:#343432!important}
+body.hca-dark .public-team{color:#f2f2ef!important;border-color:#343432!important}
+body.hca-dark .team-cap-card{background:#171717!important;color:#f2f2ef!important;border-color:#343432!important}
+body.hca-dark .team-cap-grid{border-color:#f2f2ef!important}
+body.hca-dark .team-cap-grid article{background:#171717!important;border-color:#343432!important}
+body.hca-dark .team-cap-grid strong{color:#f2f2ef!important}
+body.hca-dark .admin-contract-summary article{background:#171717!important;color:#f2f2ef;border-color:#343432}.admin-contract-summary strong{color:inherit}body.hca-dark .admin-contract-summary strong{color:#f2f2ef!important}body.hca-dark .admin-contract-summary small,body.hca-dark .admin-contract-summary span{color:#9b9b96!important}

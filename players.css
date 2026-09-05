@@ -56,3 +56,54 @@
   .hca-player-name { font-size: 18px; }
   .hca-player-rating strong { font-size: 32px; }
 }
+
+.hca-player-avatar {
+  width: 62px;
+  height: 62px;
+  min-width: 62px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f1f1;
+  flex-shrink: 0;
+}
+
+.hca-player-avatar-photo img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.hca-player-avatar-fallback {
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.hca-player-avatar {
+  width: 62px;
+  height: 62px;
+  min-width: 62px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f1f1;
+  flex-shrink: 0;
+}
+
+.hca-player-avatar-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}

@@ -61,6 +61,21 @@
     return [...map.values()].map(r=>({...r,diff:r.gf-r.ga})).sort((a,b)=>b.pts-a.pts||b.w-a.w||b.diff-a.diff||a.name.localeCompare(b.name));
   }
 
+  async function loadCapSummary(){
+    const el=document.getElementById('team-cap-summary');if(!el||!team)return;
+    const seasonNumber=Number(String(season).match(/\d+/)?.[0]||16);
+    const [{data:settings},{data:contracts,error}]=await Promise.all([
+      client.from('league_settings').select('salary_cap,currency').eq('season',season).maybeSingle(),
+      client.from('player_contracts').select('annual_salary,start_season,term_years,status').eq('team_id',team.id).eq('status','ACTIVE')
+    ]);
+    if(error){el.innerHTML='<div class="team-loading">Cap information is not configured yet.</div>';return;}
+    const cap=Number(settings?.salary_cap)||0;
+    const payroll=(contracts||[]).filter(x=>seasonNumber>=Number(x.start_season||16)&&seasonNumber<=Number(x.start_season||16)+Math.max(1,Number(x.term_years)||1)-1).reduce((sum,x)=>sum+Number(x.annual_salary||0),0);
+    const space=cap-payroll;
+    const fmt=v=>new Intl.NumberFormat('en-CA',{style:'currency',currency:settings?.currency||'CAD',maximumFractionDigits:0}).format(v||0);
+    el.innerHTML=`<div class="team-cap-grid"><article><span>CAP HIT</span><strong>${fmt(payroll)}</strong></article><article><span>SALARY CAP</span><strong>${fmt(cap)}</strong></article><article class="${space<0?'is-over':''}"><span>${space<0?'OVER CAP':'CAP SPACE'}</span><strong>${fmt(Math.abs(space))}</strong></article></div>`;
+  }
+
   function renderTeam(){
     document.title=`${window.hcaDisplayTeamName(team.name)} — HCA`;
     const base=`team.html?id=${encodeURIComponent(team.id)}`;
@@ -385,7 +400,7 @@
         client.from("teams").select("id,name,conference,division,logo")
       ]);
       if(te)throw te;if(pe)throw pe;if(ge)throw ge;if(tse)throw tse;if(!t){showError();return;}
-      team=t;players=p||[];games=g||[];allTeams=ts||[];standings=buildStandings();theme();renderTeam();renderSchedule();renderResults();populateGameSeasons();renderGames();renderLeaders();renderRoster();renderStandings();renderStats();wireSchedule();wireGameDetails();wireNav();setView(location.hash.replace("#","")||"home");page.hidden=false;
+      team=t;players=p||[];games=g||[];allTeams=ts||[];standings=buildStandings();theme();renderTeam();void loadCapSummary();renderSchedule();renderResults();populateGameSeasons();renderGames();renderLeaders();renderRoster();renderStandings();renderStats();wireSchedule();wireGameDetails();wireNav();setView(location.hash.replace("#","")||"home");page.hidden=false;
       const requestedGame = new URLSearchParams(location.search).get("game");
       if (requestedGame) { setView("games"); setTimeout(() => openGame(requestedGame), 0); }
       console.log("HCA Team site loaded:",{team:window.hcaDisplayTeamName(team.name),players:players.length,games:games.length,view:location.hash||"#home"});

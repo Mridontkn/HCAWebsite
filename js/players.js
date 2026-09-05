@@ -7,7 +7,6 @@
 
 (() => {
   // Use the existing client if one already exists.
-  // This avoids redeclaring "supabase".
   const client =
     window.hcaSupabase ||
     (typeof hcaSupabase !== "undefined" ? hcaSupabase : null);
@@ -69,6 +68,35 @@
       .replaceAll("'", "&#039;");
   }
 
+  function renderAvatar(player) {
+    const initialsText = escapeHTML(initials(player.player_name));
+    const headshot = String(player.headshot_url || "").trim();
+
+    // If the player has an NHL headshot, use it.
+    if (headshot) {
+      return `
+        <div class="hca-player-avatar hca-player-avatar-photo">
+          <img
+            src="${escapeHTML(headshot)}"
+            alt="${escapeHTML(player.player_name || "Player")}"
+            loading="lazy"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+          >
+          <span class="hca-player-avatar-fallback" style="display:none;">
+            ${initialsText}
+          </span>
+        </div>
+      `;
+    }
+
+    // No headshot = use initials.
+    return `
+      <div class="hca-player-avatar">
+        ${initialsText}
+      </div>
+    `;
+  }
+
   function render() {
     const grid = document.getElementById("hca-player-grid");
     const count = document.getElementById("hca-player-count");
@@ -90,7 +118,8 @@
       );
     });
 
-    count.textContent = `Showing ${filtered.length} of ${players.length} players`;
+    count.textContent =
+      `Showing ${filtered.length} of ${players.length} players`;
 
     if (!filtered.length) {
       grid.innerHTML =
@@ -100,9 +129,8 @@
 
     grid.innerHTML = filtered.map(player => `
       <article class="hca-player-card">
-        <div class="hca-player-avatar">
-          ${escapeHTML(initials(player.player_name))}
-        </div>
+
+        ${renderAvatar(player)}
 
         <div>
           <div class="hca-player-position">
@@ -114,7 +142,13 @@
           </h3>
 
           <p class="hca-player-team">
-            ${escapeHTML(window.hcaDisplayTeamName(player.team_name || "Free Agent"))}
+            ${escapeHTML(
+              window.hcaDisplayTeamName
+                ? window.hcaDisplayTeamName(
+                    player.team_name || "Free Agent"
+                  )
+                : (player.team_name || "Free Agent")
+            )}
           </p>
         </div>
 
@@ -122,12 +156,14 @@
           <strong>${player.overall_rating ?? "—"}</strong>
           <small>OVR</small>
         </div>
+
       </article>
     `).join("");
   }
 
   async function loadPlayers() {
     const grid = document.getElementById("hca-player-grid");
+    const searchInput = document.getElementById("hca-player-search");
 
     if (!grid) return;
 
@@ -141,21 +177,38 @@
           team_name,
           position,
           overall_rating,
-          status
+          status,
+          headshot_url
         `)
         .order("player_name", { ascending: true });
 
       if (error) throw error;
 
       players = data || [];
+
+      // Preserve search from URL if one exists.
       const params = new URLSearchParams(location.search);
       const initialSearch = params.get("search");
-      if (initialSearch && searchInput) searchInput.value = initialSearch;
+
+      if (initialSearch && searchInput) {
+        searchInput.value = initialSearch;
+      }
+
       render();
 
-      console.log(`HCA Players: loaded ${players.length} players.`);
+      console.log(
+        `HCA Players: loaded ${players.length} players.`
+      );
+
+      console.log(
+        `HCA Players: ${players.filter(p => p.headshot_url).length} players have headshots.`
+      );
+
     } catch (error) {
-      console.error("HCA Players: failed to load players:", error);
+      console.error(
+        "HCA Players: failed to load players:",
+        error
+      );
 
       grid.innerHTML =
         '<div class="hca-player-message">Could not load players.</div>';
